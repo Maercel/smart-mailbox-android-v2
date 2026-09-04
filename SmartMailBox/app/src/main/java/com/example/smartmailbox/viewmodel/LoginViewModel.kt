@@ -8,20 +8,23 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartmailbox.api.AuthRetrofitInstance
 import com.example.smartmailbox.api.MobileLoginRequest
 import com.example.smartmailbox.model.LoginState
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import org.json.JSONObject
 
 class LoginViewModel : ViewModel() {
 
-    var loginState by mutableStateOf(LoginState())
-        private set
-
-    fun onUsernameChange(username: String) {
+    fun onEmailChange(email: String) {
         loginState = loginState.copy(
-            username = username,
+            email = email,
             errorMessage = null
         )
     }
+
+    var loginState by mutableStateOf(LoginState())
+        private set
 
     fun onPasswordChange(password: String) {
         loginState = loginState.copy(
@@ -31,84 +34,45 @@ class LoginViewModel : ViewModel() {
     }
 
     fun login() {
-        val username = loginState.username.trim()
+        val email = loginState.email.trim()
         val password = loginState.password
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             loginState = loginState.copy(
                 errorMessage = "Username and password are required"
             )
             return
         }
 
+        loginState = loginState.copy(isLoading = true, errorMessage = null)
+
         viewModelScope.launch {
-            loginState = loginState.copy(
-                isLoading = true,
-                errorMessage = null
-            )
-
             try {
-                val response = AuthRetrofitInstance.api.postMobileLogin(
-                    MobileLoginRequest(
-                        username = username,
-                        password = password
-                    )
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
+
+                loginState = loginState.copy(
+                    isLoggedIn = true,
+                    isLoading = false
                 )
-
-                if (response.isSuccessful) {
-                    val body = response.body()
-
-                    if (body?.twoFactorRequired == true) {
-                        loginState = loginState.copy(
-                            isLoading = false,
-                            twoFactorRequired = true,
-                            isLoggedIn = false,
-                            password = ""
-                        )
-                    } else {
-                        loginState = loginState.copy(
-                            isLoading = false,
-                            isLoggedIn = true,
-                            twoFactorRequired = false,
-                            password = ""
-                        )
-                    }
-                } else {
-                    val errorJson = response.errorBody()?.string()
-
-                    val errorMessage = getErrorMessage(errorJson)
-
-                    loginState = loginState.copy(
-                        isLoading = false,
-                        errorMessage = errorMessage
-                    )
-                }
+            } catch (e: FirebaseAuthException) {
+                loginState = loginState.copy(
+                    isLoading = false,
+                    errorMessage = e.localizedMessage ?: "Login failed."
+                )
             } catch (e: Exception) {
                 loginState = loginState.copy(
                     isLoading = false,
-                    errorMessage = e.message ?: "Something went wrong"
+                    errorMessage = "${e.message}"
                 )
             }
         }
     }
 
-    private fun getErrorMessage(errorJson: String?): String {
-        if (errorJson.isNullOrBlank()) {
-            return "Login failed"
-        }
 
-        return try {
-            // parsing works -> message field, else "Login failed"
-            JSONObject(errorJson).optString("message", "Login failed")
-        } catch (e: Exception) {
-            "Login failed"
-        }
-    }
 
     fun clearLoginNavigationFlags() {
         loginState = loginState.copy(
             isLoggedIn = false,
-            twoFactorRequired = false
         )
     }
 }

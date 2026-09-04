@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "906531981806",
+    "project_id": "smart-mailbox-android",
+    "storage_bucket": "smart-mailbox-android.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906531981806:android:554c1663f599b633d966ff",
+        "android_client_info": {
+          "package_name": "com.example.smartmailbox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPd6ym-Syx27eghKhQC96_klbBiVubVXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

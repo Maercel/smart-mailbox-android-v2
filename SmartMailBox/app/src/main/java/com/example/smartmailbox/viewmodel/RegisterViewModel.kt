@@ -8,7 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartmailbox.api.AuthRetrofitInstance
 import com.example.smartmailbox.api.RegisterRequest
 import com.example.smartmailbox.model.RegisterState
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import org.json.JSONObject
 
 class RegisterViewModel : ViewModel() {
@@ -72,32 +76,29 @@ class RegisterViewModel : ViewModel() {
             )
 
             try {
-                val response = AuthRetrofitInstance.api.postRegister(
-                    RegisterRequest(
-                        username = username,
-                        email = email,
-                        password = password
-                    )
-                )
-
-                if (response.isSuccessful) {
-                    registerState = registerState.copy(
-                        isLoading = false,
-                        isRegistered = true,
-                        password = "",
-                        confirmPassword = "",
-                        errorMessage = null
-                    )
-                } else {
-                    registerState = registerState.copy(
-                        isLoading = false,
-                        errorMessage = getErrorMessage(response.errorBody()?.string())
-                    )
+                val authResult =
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
+                val user = authResult.user
+                if (user != null) {
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(username)
+                        .build()
+                    user.updateProfile(profileUpdates).await()
                 }
+
+                registerState = registerState.copy(
+                    isLoading = false,
+                    isRegistered = true
+                )
+            } catch (e: FirebaseAuthException) {
+                registerState = registerState.copy(
+                    isLoading = false,
+                    errorMessage = e.localizedMessage ?: "Registration failed."
+                )
             } catch (e: Exception) {
                 registerState = registerState.copy(
                     isLoading = false,
-                    errorMessage = e.message ?: "Something went wrong"
+                    errorMessage = "System error: ${e.message}"
                 )
             }
         }
@@ -107,17 +108,5 @@ class RegisterViewModel : ViewModel() {
         registerState = registerState.copy(
             isRegistered = false
         )
-    }
-
-    private fun getErrorMessage(errorJson: String?): String {
-        if (errorJson.isNullOrBlank()) {
-            return "Registration failed"
-        }
-
-        return try {
-            JSONObject(errorJson).optString("message", "Registration failed")
-        } catch (e: Exception) {
-            "Registration failed"
-        }
     }
 }

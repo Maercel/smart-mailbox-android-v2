@@ -51,12 +51,6 @@ fun LoginView(
         }
     }
 
-    LaunchedEffect(loginState.twoFactorRequired) {
-        if (loginState.twoFactorRequired) {
-            onTwoFactorRequired()
-            loginViewModel.clearLoginNavigationFlags()
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -73,8 +67,8 @@ fun LoginView(
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = loginState.username,
-            onValueChange = loginViewModel::onUsernameChange,
+            value = loginState.email,
+            onValueChange = loginViewModel::onEmailChange,
             label = { Text("Username") },
             modifier = Modifier.fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyMedium,
