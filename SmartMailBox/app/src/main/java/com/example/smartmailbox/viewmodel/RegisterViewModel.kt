@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartmailbox.api.AuthRetrofitInstance
 import com.example.smartmailbox.api.RegisterRequest
+import com.example.smartmailbox.auth.AuthRepository
 import com.example.smartmailbox.model.RegisterState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -17,6 +18,7 @@ import org.json.JSONObject
 
 class RegisterViewModel : ViewModel() {
 
+    private val authRepository = AuthRepository()
     var registerState by mutableStateOf(RegisterState())
         private set
 
@@ -76,15 +78,8 @@ class RegisterViewModel : ViewModel() {
             )
 
             try {
-                val authResult =
-                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
-                val user = authResult.user
-                if (user != null) {
-                    val profileUpdates = UserProfileChangeRequest.Builder()
-                        .setDisplayName(username)
-                        .build()
-                    user.updateProfile(profileUpdates).await()
-                }
+                val registerResult =
+                    authRepository.registerAccount(username, email, password)
 
                 registerState = registerState.copy(
                     isLoading = false,

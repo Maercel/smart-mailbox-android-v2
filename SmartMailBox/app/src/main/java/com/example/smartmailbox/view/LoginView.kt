@@ -67,9 +67,9 @@ fun LoginView(
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = loginState.email,
-            onValueChange = loginViewModel::onEmailChange,
-            label = { Text("Username") },
+            value = loginState.identifier,
+            onValueChange = loginViewModel::onIdentifierChange,
+            label = { Text("Email or username") },
             modifier = Modifier.fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyMedium,
             singleLine = true,

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartmailbox.api.AuthRetrofitInstance
 import com.example.smartmailbox.api.MobileLoginRequest
+import com.example.smartmailbox.auth.AuthRepository
 import com.example.smartmailbox.model.LoginState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -16,9 +17,11 @@ import org.json.JSONObject
 
 class LoginViewModel : ViewModel() {
 
-    fun onEmailChange(email: String) {
+    private val authRepository = AuthRepository()
+
+    fun onIdentifierChange(identifier: String) {
         loginState = loginState.copy(
-            email = email,
+            identifier = identifier,
             errorMessage = null
         )
     }
@@ -34,31 +37,30 @@ class LoginViewModel : ViewModel() {
     }
 
     fun login() {
-        val email = loginState.email.trim()
+        val username = loginState.identifier.trim()
         val password = loginState.password
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty()) {
             loginState = loginState.copy(
                 errorMessage = "Username and password are required"
             )
             return
         }
 
-        loginState = loginState.copy(isLoading = true, errorMessage = null)
+        loginState = loginState.copy(
+            isLoading = true,
+            errorMessage = null)
 
         viewModelScope.launch {
             try {
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
+                val loginResult = authRepository.login(username, password)
 
-                loginState = loginState.copy(
-                    isLoggedIn = true,
-                    isLoading = false
-                )
-            } catch (e: FirebaseAuthException) {
-                loginState = loginState.copy(
-                    isLoading = false,
-                    errorMessage = e.localizedMessage ?: "Login failed."
-                )
+                if (loginResult) {
+                    loginState = loginState.copy(
+                        isLoggedIn = true,
+                        isLoading = false
+                    )
+                }
             } catch (e: Exception) {
                 loginState = loginState.copy(
                     isLoading = false,

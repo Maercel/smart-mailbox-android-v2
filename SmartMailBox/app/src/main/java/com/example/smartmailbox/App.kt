@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.smartmailbox.auth.AuthRepository
 import com.example.smartmailbox.navigation.NavigationScreen
 import com.example.smartmailbox.ui.theme.SmartMailBoxTheme
 import com.example.smartmailbox.view.FaceVerifyView
@@ -54,6 +55,7 @@ fun App() {
         NavigationScreen.Login.route,
         NavigationScreen.FaceVerify.route
     )
+
 
     SmartMailBoxTheme {
         Scaffold(
@@ -135,7 +137,7 @@ fun App() {
                         registerViewModel = registerViewModel,
                         paddingValues = paddingValues,
                         onRegisterSuccess = {
-                            navController.navigate(NavigationScreen.Login.route) {
+                            navController.navigate(NavigationScreen.Home.route) {
                                 popUpTo(NavigationScreen.Register.route) {
                                     inclusive = true
                                 }
