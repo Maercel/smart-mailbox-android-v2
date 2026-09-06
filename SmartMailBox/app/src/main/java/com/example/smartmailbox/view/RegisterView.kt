@@ -1,8 +1,11 @@
 package com.example.smartmailbox.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -22,10 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.smartmailbox.R
 import com.example.smartmailbox.ui.theme.Alata
 import com.example.smartmailbox.ui.theme.ErrorRed
 import com.example.smartmailbox.ui.theme.ForestGreen
@@ -62,7 +69,7 @@ fun RegisterView(
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-
+        /*
         OutlinedTextField(
             value = registerState.username,
             onValueChange = registerViewModel::onUsernameChange,
@@ -81,7 +88,7 @@ fun RegisterView(
         )
 
         Spacer(modifier = Modifier.height(12.dp))
-
+        */
         OutlinedTextField(
             value = registerState.email,
             onValueChange = registerViewModel::onEmailChange,
@@ -161,7 +168,7 @@ fun RegisterView(
                 .fillMaxWidth()
                 .height(72.dp)
                 .padding(0.dp, 8.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
             shape = RoundedCornerShape(5.dp),
             enabled = !registerState.isLoading
         ) {
@@ -174,6 +181,59 @@ fun RegisterView(
                 Text(
                     text = "Register"
                 )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            HorizontalDivider(
+                modifier = Modifier.weight(1f),
+                color = VeryDarkGreen
+            )
+
+            Text(
+                text = "OR",
+                modifier = Modifier.padding(horizontal = 12.dp),
+                style = MaterialTheme.typography.bodySmall
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.weight(1f),
+                color = VeryDarkGreen
+            )
+        }
+
+
+        Button(
+            onClick = { registerViewModel.registerWithGoogle() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            contentPadding = PaddingValues(horizontal = 12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            ),
+            shape = RoundedCornerShape(5.dp),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_google_logo),
+                    contentDescription = "Google Logo",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(Alignment.CenterStart)
+                )
+
+                Text("Register with Google")
             }
         }
 

@@ -25,7 +25,6 @@ class AuthRepository(
         get() = firebaseAuth.currentUser != null
 
     suspend fun registerAccount(
-        username: String,
         email: String,
         password: String
     ) : Boolean {
@@ -34,26 +33,13 @@ class AuthRepository(
                 val task = firebaseAuth.createUserWithEmailAndPassword(email, password)
                 task.addOnSuccessListener { authResult  ->
                     if (continuation.isActive) {
-                        val uid = authResult .user!!.uid
-                        val usernameData  = hashMapOf(
-                            "uid" to uid,
-                            "email" to email
-                        )
-
-                        firestore.collection("usernames")
-                            .document(username)
-                            .set(usernameData)
-                            .addOnSuccessListener { documentReference ->
-                                Log.d("Firestore", "Username saved successfully!")
-                            }
-                            .addOnFailureListener { e ->
-                                Log.w("Firestore", "Error adding username!", e)
-                            }
-
+                        /*
                         scope.launch {
                             login(email, password)
                             continuation.resume(true)
                         }
+                        */
+                        continuation.resume(true)
                     }
                 }
 
@@ -77,16 +63,13 @@ class AuthRepository(
 
 
     suspend fun login(
-        username: String,
+        email: String,
         password: String
     ): Boolean {
         return try {
-            val userEmail = resolveEmail(username)
-            if (userEmail.isNullOrBlank()) return false
-
             val result = suspendCancellableCoroutine { continuation ->
 
-                val task = firebaseAuth.signInWithEmailAndPassword(userEmail, password)
+                val task = firebaseAuth.signInWithEmailAndPassword(email, password)
 
                 task.addOnSuccessListener {
                     if (continuation.isActive) {
@@ -111,34 +94,10 @@ class AuthRepository(
         }
     }
 
-    fun logout() = firebaseAuth.signOut()
-
-    private suspend fun resolveEmail(identifier: String): String? {
-        if (identifier.contains("@")) {
-            return identifier
-        }
-
-        return suspendCancellableCoroutine { continuation ->
-            firestore.collection("usernames")
-                .document(identifier)
-                .get()
-                .addOnSuccessListener { document ->
-                    val email = document.getString("email")
-                    if (continuation.isActive) {
-                        continuation.resume(email)
-                    }
-                }
-                .addOnFailureListener {
-                    if (continuation.isActive) {
-                        continuation.resume(null)
-                    }
-                }
-
-            continuation.invokeOnCancellation {
-                // clean up / cancel Firebase operation
-            }
-        }
+    suspend fun loginWithGoogle(): Boolean {
+        return false
     }
 
+    fun logout() = firebaseAuth.signOut()
 }
 

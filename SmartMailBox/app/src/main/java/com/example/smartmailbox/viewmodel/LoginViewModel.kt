@@ -19,9 +19,9 @@ class LoginViewModel : ViewModel() {
 
     private val authRepository = AuthRepository()
 
-    fun onIdentifierChange(identifier: String) {
+    fun onEmailChange(email: String) {
         loginState = loginState.copy(
-            identifier = identifier,
+            email = email,
             errorMessage = null
         )
     }
@@ -37,13 +37,18 @@ class LoginViewModel : ViewModel() {
     }
 
     fun login() {
-        val username = loginState.identifier.trim()
+        val email = loginState.email.trim()
         val password = loginState.password
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             loginState = loginState.copy(
                 errorMessage = "Username and password are required"
             )
+            return
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            loginState = loginState.copy(errorMessage = "Enter a valid email address")
             return
         }
 
@@ -53,7 +58,7 @@ class LoginViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val loginResult = authRepository.login(username, password)
+                val loginResult = authRepository.login(email, password)
 
                 if (loginResult) {
                     loginState = loginState.copy(
@@ -70,7 +75,9 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    fun loginWithGoogle() {
 
+    }
 
     fun clearLoginNavigationFlags() {
         loginState = loginState.copy(

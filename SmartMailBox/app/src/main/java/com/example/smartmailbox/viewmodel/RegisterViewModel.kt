@@ -21,14 +21,14 @@ class RegisterViewModel : ViewModel() {
     private val authRepository = AuthRepository()
     var registerState by mutableStateOf(RegisterState())
         private set
-
+    /*
     fun onUsernameChange(username: String) {
         registerState = registerState.copy(
             username = username,
             errorMessage = null
         )
     }
-
+    */
     fun onEmailChange(email: String) {
         registerState = registerState.copy(
             email = email,
@@ -51,15 +51,20 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun register() {
-        val username = registerState.username.trim()
+        //val username = registerState.username.trim()
         val email = registerState.email.trim()
         val password = registerState.password
         val confirmPassword = registerState.confirmPassword
 
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             registerState = registerState.copy(
                 errorMessage = "All fields are required"
             )
+            return
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            registerState = registerState.copy(errorMessage = "Enter a valid email address")
             return
         }
 
@@ -79,7 +84,7 @@ class RegisterViewModel : ViewModel() {
 
             try {
                 val registerResult =
-                    authRepository.registerAccount(username, email, password)
+                    authRepository.registerAccount(email, password)
 
                 registerState = registerState.copy(
                     isLoading = false,
@@ -97,6 +102,10 @@ class RegisterViewModel : ViewModel() {
                 )
             }
         }
+    }
+
+    fun registerWithGoogle() {
+
     }
 
     fun clearRegisterNavigationFlag() {

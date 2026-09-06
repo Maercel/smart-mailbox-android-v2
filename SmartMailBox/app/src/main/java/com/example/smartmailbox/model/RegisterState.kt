@@ -1,7 +1,7 @@
 package com.example.smartmailbox.model
 
 data class RegisterState(
-    val username: String = "",
+    //val username: String = "",
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
