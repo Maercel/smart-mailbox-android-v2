@@ -5,15 +5,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartmailbox.api.AuthRetrofitInstance
-import com.example.smartmailbox.api.MobileLoginRequest
 import com.example.smartmailbox.auth.AuthRepository
-import com.example.smartmailbox.model.LoginState
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
+import com.example.smartmailbox.domain.model.LoginState
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import org.json.JSONObject
 
 class LoginViewModel : ViewModel() {
 
@@ -62,7 +56,6 @@ class LoginViewModel : ViewModel() {
 
                 if (loginResult) {
                     loginState = loginState.copy(
-                        isLoggedIn = true,
                         isLoading = false
                     )
                 }
@@ -75,13 +68,16 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun loginWithGoogle() {
-
-    }
-
-    fun clearLoginNavigationFlags() {
-        loginState = loginState.copy(
-            isLoggedIn = false,
-        )
+    fun loginWithGoogle(idToken: String) {
+        loginState = loginState.copy(isLoading = true, errorMessage = null)
+        viewModelScope.launch {
+            val success = authRepository.signInWithGoogleIdToken(idToken)
+            loginState = loginState.copy(
+                isLoading = false,
+                errorMessage = if (!success)
+                    "Google sign-in failed"
+                else null
+            )
+        }
     }
 }

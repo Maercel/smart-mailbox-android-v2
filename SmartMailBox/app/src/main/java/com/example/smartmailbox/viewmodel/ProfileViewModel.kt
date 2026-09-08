@@ -5,13 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartmailbox.api.AuthRetrofitInstance
-import com.example.smartmailbox.model.ProfileState
+import com.example.smartmailbox.auth.AuthRepository
+import com.example.smartmailbox.domain.model.ProfileState
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 
 class ProfileViewModel : ViewModel() {
+    private val authRepository = AuthRepository()
 
     var profileState by mutableStateOf(ProfileState())
         private set
@@ -61,5 +62,15 @@ class ProfileViewModel : ViewModel() {
         } catch (e: Exception) {
             "Failed to load profile"
         }
+    }
+
+    fun logout() {
+        profileState = profileState.copy(
+            isLoading = true,
+            errorMessage = null
+        )
+        val success = authRepository.logout()
+
+        profileState = ProfileState()
     }
 }

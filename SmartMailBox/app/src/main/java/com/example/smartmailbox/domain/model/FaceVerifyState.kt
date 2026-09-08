@@ -1,4 +1,4 @@
-package com.example.smartmailbox.model
+package com.example.smartmailbox.domain.model
 
 data class FaceVerifyState(
     val isLoading: Boolean = false,

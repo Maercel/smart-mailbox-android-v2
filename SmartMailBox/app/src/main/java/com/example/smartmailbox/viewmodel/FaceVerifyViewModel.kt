@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartmailbox.api.AuthRetrofitInstance
-import com.example.smartmailbox.model.FaceVerifyState
+import com.example.smartmailbox.domain.model.FaceVerifyState
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody

@@ -1,5 +1,6 @@
 package com.example.smartmailbox.view
 
+import android.content.MutableContextWrapper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,36 +25,45 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smartmailbox.R
+import com.example.smartmailbox.auth.GoogleAuthHelper
 import com.example.smartmailbox.ui.theme.Alata
 import com.example.smartmailbox.ui.theme.ErrorRed
 import com.example.smartmailbox.ui.theme.ForestGreen
 import com.example.smartmailbox.ui.theme.VeryDarkGreen
 import com.example.smartmailbox.viewmodel.RegisterViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterView(
     registerViewModel: RegisterViewModel,
     paddingValues: PaddingValues,
-    onRegisterSuccess: () -> Unit,
     onBackToLogin: () -> Unit
 ) {
     val registerState = registerViewModel.registerState
 
-    LaunchedEffect(registerState.isRegistered) {
-        if (registerState.isRegistered) {
-            onRegisterSuccess()
-            registerViewModel.clearRegisterNavigationFlag()
-        }
+    val context = LocalContext.current
+    val contextWrapper = remember { MutableContextWrapper(context) }
+
+    SideEffect {
+        contextWrapper.baseContext = context
     }
+
+    val googleAuthHelper = remember { GoogleAuthHelper(contextWrapper) }
+    val coroutineScope = rememberCoroutineScope()
+
 
     Column(
         modifier = Modifier
@@ -192,24 +202,34 @@ fun RegisterView(
         ) {
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = VeryDarkGreen
+                color = VeryDarkGreen.copy(alpha = 0.7f)
             )
 
             Text(
                 text = "OR",
                 modifier = Modifier.padding(horizontal = 12.dp),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                color = VeryDarkGreen.copy(alpha = 0.7f)
             )
 
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = VeryDarkGreen
+                color = VeryDarkGreen.copy(alpha = 0.7f)
             )
         }
 
 
         Button(
-            onClick = { registerViewModel.registerWithGoogle() },
+            onClick = {
+                coroutineScope.launch {
+                    val idToken = googleAuthHelper.requestGoogleIdToken()
+                    if (idToken != null) {
+                        registerViewModel.registerWithGoogle(idToken)
+                    } else {
+                        // surface an error
+                    }
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),

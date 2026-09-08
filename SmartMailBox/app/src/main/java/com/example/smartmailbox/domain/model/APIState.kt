@@ -1,4 +1,4 @@
-package com.example.smartmailbox.model
+package com.example.smartmailbox.domain.model
 
 import com.example.smartmailbox.api.PostMailBoxDataResponse
 

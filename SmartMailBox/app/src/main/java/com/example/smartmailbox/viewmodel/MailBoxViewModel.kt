@@ -6,14 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartmailbox.api.MailBoxAPI
 import com.example.smartmailbox.api.PostMailBoxData
 import com.example.smartmailbox.api.RetrofitInstance
-import com.example.smartmailbox.model.APIState
-import com.example.smartmailbox.model.MailBoxState
-import com.example.smartmailbox.model.ScannerState
+import com.example.smartmailbox.domain.model.APIState
+import com.example.smartmailbox.domain.model.MailBoxState
+import com.example.smartmailbox.domain.model.ScannerState
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
 import android.util.Base64
 import java.io.File
 import java.io.FileOutputStream

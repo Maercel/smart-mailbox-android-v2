@@ -1,4 +1,4 @@
-package com.example.smartmailbox.model
+package com.example.smartmailbox.domain.model
 
 data class RegisterState(
     //val username: String = "",
@@ -6,6 +6,5 @@ data class RegisterState(
     val password: String = "",
     val confirmPassword: String = "",
     val isLoading: Boolean = false,
-    val isRegistered: Boolean = false,
     val errorMessage: String? = null
 )

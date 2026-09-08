@@ -5,8 +5,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -21,6 +26,7 @@ import com.example.smartmailbox.view.LoginView
 import com.example.smartmailbox.view.MailBoxView
 import com.example.smartmailbox.view.ProfileView
 import com.example.smartmailbox.view.RegisterView
+import com.example.smartmailbox.viewmodel.AppViewModel
 import com.example.smartmailbox.viewmodel.FaceVerifyViewModel
 import com.example.smartmailbox.viewmodel.HomeViewModel
 import com.example.smartmailbox.viewmodel.LogViewModel
@@ -28,6 +34,10 @@ import com.example.smartmailbox.viewmodel.LoginViewModel
 import com.example.smartmailbox.viewmodel.MailBoxViewModel
 import com.example.smartmailbox.viewmodel.ProfileViewModel
 import com.example.smartmailbox.viewmodel.RegisterViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -47,14 +57,47 @@ fun App() {
     val profileViewModel: ProfileViewModel = viewModel()
     val faceVerifyViewModel: FaceVerifyViewModel = viewModel()
     val registerViewModel: RegisterViewModel = viewModel()
+    val appViewModel: AppViewModel = viewModel()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showMainBars = currentRoute !in listOf(
         NavigationScreen.Login.route,
+        NavigationScreen.Register.route,
         NavigationScreen.FaceVerify.route
     )
+
+    val isLoggedIn by appViewModel.isLoggedIn.collectAsStateWithLifecycle()
+
+    // launches every time isLoggedIn changes: login, logout
+    LaunchedEffect(isLoggedIn) {
+        when (isLoggedIn) {
+            true -> {
+                if (currentRoute != NavigationScreen.Home.route) {
+                    navController.navigate(NavigationScreen.Home.route) {
+                        // Clear everything up to and including the start destination
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            }
+            false -> {
+                if (currentRoute != NavigationScreen.Login.route &&
+                    currentRoute != NavigationScreen.Register.route &&
+                    currentRoute != NavigationScreen.FaceVerify.route
+                ) {
+                    navController.navigate(NavigationScreen.Login.route) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true                    }
+                }
+            }
+            null -> { /* do nothing still initializing */ }
+        }
+    }
+
 
 
     SmartMailBoxTheme {
@@ -79,7 +122,7 @@ fun App() {
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = NavigationScreen.Login.route,
+                startDestination = NavigationScreen.Home.route,
                 enterTransition = { fadeIn(tween(200)) },
                 exitTransition = { fadeOut(tween(200)) },
                 popEnterTransition = { fadeIn(tween(200)) },
@@ -89,13 +132,6 @@ fun App() {
                 composable(NavigationScreen.Login.route) {
                     LoginView(
                         loginViewModel = loginModel,
-                        onLoginSuccess = {
-                            navController.navigate(NavigationScreen.Home.route) {
-                                popUpTo(NavigationScreen.Login.route) {
-                                    inclusive = true // So backstack becomes Home (it removes Login)
-                                }
-                            }
-                        },
                         onTwoFactorRequired = {
                             navController.navigate(NavigationScreen.FaceVerify.route)
                         },
@@ -119,9 +155,7 @@ fun App() {
                         paddingValues = paddingValues,
                         onVerifySuccess = {
                             navController.navigate(NavigationScreen.Home.route) {
-                                popUpTo(NavigationScreen.Login.route) {
-                                    inclusive = true
-                                }
+                                popUpTo(NavigationScreen.Home.route) { inclusive = true }
                             }
                         },
                         onBackToLogin = {
@@ -136,13 +170,6 @@ fun App() {
                     RegisterView(
                         registerViewModel = registerViewModel,
                         paddingValues = paddingValues,
-                        onRegisterSuccess = {
-                            navController.navigate(NavigationScreen.Home.route) {
-                                popUpTo(NavigationScreen.Register.route) {
-                                    inclusive = true
-                                }
-                            }
-                        },
                         onBackToLogin = {
                             navController.popBackStack(
                                 route = NavigationScreen.Login.route,
@@ -158,6 +185,24 @@ fun App() {
             // MailBoxView(mailBoxViewModel, paddingValues)
             // HomeView(paddingValues = paddingValues)
             // LogView(paddingValues = paddingValues)
+        }
+    }
+
+    fun navigateToHomeAndClearBackStack() {
+        navController.navigate(NavigationScreen.Home.route) {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+            launchSingleTop = true
+        }
+    }
+
+    fun navigateToLoginAndClearBackStack() {
+        navController.navigate(NavigationScreen.Login.route) {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+            launchSingleTop = true
         }
     }
 }

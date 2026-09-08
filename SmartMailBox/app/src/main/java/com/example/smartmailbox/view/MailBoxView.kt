@@ -21,9 +21,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.smartmailbox.view.buttons.OpenMailBoxButton
+import com.example.smartmailbox.view.components.buttons.OpenMailBoxButton
 import com.example.smartmailbox.viewmodel.MailBoxViewModel
-import com.example.smartmailbox.view.buttons.ScanQRCodeButton
+import com.example.smartmailbox.view.components.buttons.ScanQRCodeButton
 import androidx.compose.ui.platform.LocalContext
 
 @Composable

@@ -5,16 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartmailbox.api.AuthRetrofitInstance
-import com.example.smartmailbox.api.RegisterRequest
 import com.example.smartmailbox.auth.AuthRepository
-import com.example.smartmailbox.model.RegisterState
-import com.google.firebase.auth.FirebaseAuth
+import com.example.smartmailbox.domain.model.RegisterState
 import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import org.json.JSONObject
 
 class RegisterViewModel : ViewModel() {
 
@@ -78,18 +72,24 @@ class RegisterViewModel : ViewModel() {
         viewModelScope.launch {
             registerState = registerState.copy(
                 isLoading = true,
-                errorMessage = null,
-                isRegistered = false
+                errorMessage = null
             )
 
             try {
                 val registerResult =
                     authRepository.registerAccount(email, password)
 
-                registerState = registerState.copy(
-                    isLoading = false,
-                    isRegistered = true
-                )
+                registerState = if (registerResult) {
+                    registerState.copy(
+                        isLoading = false,
+                        errorMessage = null
+                    )
+                } else {
+                    registerState.copy(
+                        isLoading = false,
+                        errorMessage = "Registration failed."
+                    )
+                }
             } catch (e: FirebaseAuthException) {
                 registerState = registerState.copy(
                     isLoading = false,
@@ -104,13 +104,19 @@ class RegisterViewModel : ViewModel() {
         }
     }
 
-    fun registerWithGoogle() {
-
-    }
-
-    fun clearRegisterNavigationFlag() {
-        registerState = registerState.copy(
-            isRegistered = false
-        )
+    fun registerWithGoogle(idToken: String) {
+        viewModelScope.launch {
+            registerState = registerState.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+            val success = authRepository.signInWithGoogleIdToken(idToken)
+            registerState = registerState.copy(
+                isLoading = false,
+                errorMessage = if (!success)
+                    "Google sign-in failed"
+                else null
+            )
+        }
     }
 }

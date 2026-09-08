@@ -1,4 +1,4 @@
-package com.example.smartmailbox.model
+package com.example.smartmailbox.domain.model
 
 
 data class LoginState(
@@ -6,5 +6,4 @@ data class LoginState(
     val password: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val isLoggedIn: Boolean = false,
 )

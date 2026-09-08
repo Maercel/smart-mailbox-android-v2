@@ -1,6 +1,6 @@
 package com.example.smartmailbox.view
 
-import android.R
+import androidx.collection.intSetOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,21 +13,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.smartmailbox.ui.theme.Alata
 import com.example.smartmailbox.ui.theme.Emerald
 import com.example.smartmailbox.ui.theme.ErrorRed
 import com.example.smartmailbox.ui.theme.ForestGreen
-import com.example.smartmailbox.ui.theme.LightMint
 import com.example.smartmailbox.ui.theme.VeryDarkGreen
 import com.example.smartmailbox.viewmodel.ProfileViewModel
 
@@ -38,14 +41,6 @@ fun ProfileView(
     onTwoFactorClick: () -> Unit
 ) {
     val profileState = profileViewModel.profileState
-
-    /*
-    Later, when backend profile route works:
-
-    LaunchedEffect(Unit) {
-        profileViewModel.loadProfile()
-    }
-    */
 
     Column(
         modifier = Modifier
@@ -147,20 +142,22 @@ fun ProfileView(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { },
+            onClick = { profileViewModel.logout() },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
             shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = ForestGreen,
-                contentColor = VeryDarkGreen
+                containerColor = Color.Red,
+                contentColor = Color.White
             )
         ) {
             Text(
-                text = "Change Password",
+                text = "Logout",
                 fontFamily = Alata,
+                style = MaterialTheme.typography.bodyMedium,
+                color = VeryDarkGreen,
                 fontWeight = FontWeight.Bold
             )
         }
