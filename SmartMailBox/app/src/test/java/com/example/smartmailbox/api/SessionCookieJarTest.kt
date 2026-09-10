@@ -1,5 +1,6 @@
 package com.example.smartmailbox.api
 
+import com.example.smartmailbox.api.data.SessionCookieJar
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Assert.assertEquals
