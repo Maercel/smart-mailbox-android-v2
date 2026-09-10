@@ -5,28 +5,30 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.smartmailbox.navigation.NavigationScreen
+import com.example.smartmailbox.navigation.ui.NavigationScreen
 import com.example.smartmailbox.ui.theme.SmartMailBoxTheme
-import com.example.smartmailbox.view.FaceVerifyView
-import com.example.smartmailbox.view.HomeView
-import com.example.smartmailbox.view.LogView
-import com.example.smartmailbox.view.LoginView
-import com.example.smartmailbox.view.MailBoxView
-import com.example.smartmailbox.view.ProfileView
-import com.example.smartmailbox.view.RegisterView
-import com.example.smartmailbox.viewmodel.FaceVerifyViewModel
-import com.example.smartmailbox.viewmodel.HomeViewModel
-import com.example.smartmailbox.viewmodel.LogViewModel
-import com.example.smartmailbox.viewmodel.LoginViewModel
-import com.example.smartmailbox.viewmodel.MailBoxViewModel
-import com.example.smartmailbox.viewmodel.ProfileViewModel
-import com.example.smartmailbox.viewmodel.RegisterViewModel
+import com.example.smartmailbox.auth.ui.faceverify.FaceVerifyView
+import com.example.smartmailbox.home.ui.HomeView
+import com.example.smartmailbox.log.ui.LogView
+import com.example.smartmailbox.auth.ui.login.LoginView
+import com.example.smartmailbox.mailbox.ui.MailBoxView
+import com.example.smartmailbox.profile.ui.ProfileView
+import com.example.smartmailbox.auth.ui.register.RegisterView
+import com.example.smartmailbox.auth.ui.faceverify.FaceVerifyViewModel
+import com.example.smartmailbox.home.ui.HomeViewModel
+import com.example.smartmailbox.log.ui.LogViewModel
+import com.example.smartmailbox.auth.ui.login.LoginViewModel
+import com.example.smartmailbox.mailbox.ui.MailBoxViewModel
+import com.example.smartmailbox.profile.ui.ProfileViewModel
+import com.example.smartmailbox.auth.ui.register.RegisterViewModel
 
 
 @Composable
@@ -46,14 +48,48 @@ fun App() {
     val profileViewModel: ProfileViewModel = viewModel()
     val faceVerifyViewModel: FaceVerifyViewModel = viewModel()
     val registerViewModel: RegisterViewModel = viewModel()
+    val appViewModel: AppViewModel = viewModel()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showMainBars = currentRoute !in listOf(
         NavigationScreen.Login.route,
+        NavigationScreen.Register.route,
         NavigationScreen.FaceVerify.route
     )
+
+    val isLoggedIn by appViewModel.isLoggedIn.collectAsStateWithLifecycle()
+
+    // launches every time isLoggedIn changes: login, logout
+    LaunchedEffect(isLoggedIn) {
+        when (isLoggedIn) {
+            true -> {
+                if (currentRoute != NavigationScreen.Home.route) {
+                    navController.navigate(NavigationScreen.Home.route) {
+                        // Clear everything up to and including the start destination
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            }
+            false -> {
+                if (currentRoute != NavigationScreen.Login.route &&
+                    currentRoute != NavigationScreen.Register.route &&
+                    currentRoute != NavigationScreen.FaceVerify.route
+                ) {
+                    navController.navigate(NavigationScreen.Login.route) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true                    }
+                }
+            }
+            null -> { /* do nothing still initializing */ }
+        }
+    }
+
+
 
     SmartMailBoxTheme {
         Scaffold(
@@ -77,7 +113,7 @@ fun App() {
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = NavigationScreen.Login.route,
+                startDestination = NavigationScreen.Home.route,
                 enterTransition = { fadeIn(tween(200)) },
                 exitTransition = { fadeOut(tween(200)) },
                 popEnterTransition = { fadeIn(tween(200)) },
@@ -87,13 +123,6 @@ fun App() {
                 composable(NavigationScreen.Login.route) {
                     LoginView(
                         loginViewModel = loginModel,
-                        onLoginSuccess = {
-                            navController.navigate(NavigationScreen.Home.route) {
-                                popUpTo(NavigationScreen.Login.route) {
-                                    inclusive = true // So backstack becomes Home (it removes Login)
-                                }
-                            }
-                        },
                         onTwoFactorRequired = {
                             navController.navigate(NavigationScreen.FaceVerify.route)
                         },
@@ -117,9 +146,7 @@ fun App() {
                         paddingValues = paddingValues,
                         onVerifySuccess = {
                             navController.navigate(NavigationScreen.Home.route) {
-                                popUpTo(NavigationScreen.Login.route) {
-                                    inclusive = true
-                                }
+                                popUpTo(NavigationScreen.Home.route) { inclusive = true }
                             }
                         },
                         onBackToLogin = {
@@ -134,13 +161,6 @@ fun App() {
                     RegisterView(
                         registerViewModel = registerViewModel,
                         paddingValues = paddingValues,
-                        onRegisterSuccess = {
-                            navController.navigate(NavigationScreen.Login.route) {
-                                popUpTo(NavigationScreen.Register.route) {
-                                    inclusive = true
-                                }
-                            }
-                        },
                         onBackToLogin = {
                             navController.popBackStack(
                                 route = NavigationScreen.Login.route,
@@ -156,6 +176,24 @@ fun App() {
             // MailBoxView(mailBoxViewModel, paddingValues)
             // HomeView(paddingValues = paddingValues)
             // LogView(paddingValues = paddingValues)
+        }
+    }
+
+    fun navigateToHomeAndClearBackStack() {
+        navController.navigate(NavigationScreen.Home.route) {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+            launchSingleTop = true
+        }
+    }
+
+    fun navigateToLoginAndClearBackStack() {
+        navController.navigate(NavigationScreen.Login.route) {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+            launchSingleTop = true
         }
     }
 }

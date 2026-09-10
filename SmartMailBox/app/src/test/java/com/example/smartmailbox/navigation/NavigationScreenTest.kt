@@ -1,5 +1,6 @@
 package com.example.smartmailbox.navigation
 
+import com.example.smartmailbox.navigation.ui.NavigationScreen
 import org.junit.Assert
 import org.junit.Test
 

@@ -1,5 +1,6 @@
 package com.example.smartmailbox.util
 
+import com.example.smartmailbox.scanner.domain.MailBoxQRParser
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

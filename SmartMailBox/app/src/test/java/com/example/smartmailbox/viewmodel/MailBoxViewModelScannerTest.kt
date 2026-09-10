@@ -1,5 +1,6 @@
 package com.example.smartmailbox.viewmodel
 
+import com.example.smartmailbox.mailbox.ui.MailBoxViewModel
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
