@@ -82,7 +82,8 @@ fun App() {
                 ) {
                     navController.navigate(NavigationScreen.Login.route) {
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                        launchSingleTop = true                    }
+                        launchSingleTop = true
+                    }
                 }
             }
             null -> { /* do nothing still initializing */ }

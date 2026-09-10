@@ -66,9 +66,11 @@ fun AppFooter(
             NavigationBarItem(
                 selected = currentRoute == item.route,
                 onClick = {
+                    if (currentRoute == NavigationScreen.Profile.route) {
+                        navController.popBackStack() // rough patch for profile screen
+                    }
                     navController.navigate(item.route) {
-                        //popUpTo(navController.graph.startDestinationId) { before login
-                        popUpTo(NavigationScreen.Home.route) {
+                        popUpTo(navController.graph.startDestinationId) {
                             saveState = true // pause and save
                         }
                         launchSingleTop = true // prevent duplicates
