@@ -15,11 +15,9 @@ import androidx.compose.ui.Modifier
 fun LogView(logViewModel: LogViewModel, paddingValues: PaddingValues) {
     Box(modifier = Modifier
         .fillMaxSize()
-        .padding(paddingValues)
+        .padding(paddingValues),
+        contentAlignment = Alignment.Center
     ) {
         Text("LogView")
-        Text("BLOFA BLOFA",
-            modifier = Modifier.align(Alignment.Center),
-            style = MaterialTheme.typography.titleLarge)
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.example.smartmailbox.R
 import com.example.smartmailbox.auth.data.GoogleAuthHelper
 import com.example.smartmailbox.ui.theme.Alata
+import com.example.smartmailbox.ui.theme.Black
 import com.example.smartmailbox.ui.theme.ErrorRed
 import com.example.smartmailbox.ui.theme.VeryDarkGreen
 import kotlinx.coroutines.launch
@@ -70,12 +72,14 @@ fun LoginView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
         Text(
             text = "Login",
-            style = MaterialTheme.typography.headlineLarge
+            style = MaterialTheme.typography.headlineLarge,
+            letterSpacing = 1.5.sp
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
             value = loginState.email,
@@ -165,12 +169,12 @@ fun LoginView(
                 text = "OR",
                 modifier = Modifier.padding(horizontal = 12.dp),
                 style = MaterialTheme.typography.bodySmall,
-                color = VeryDarkGreen.copy(alpha = 0.7f)
+                color = Black.copy(alpha = 0.7f)
             )
 
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = VeryDarkGreen.copy(alpha = 0.7f)
+                color = Black.copy(alpha = 0.7f)
             )
         }
 

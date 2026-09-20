@@ -22,3 +22,9 @@ val DarkGreen = Color(0xFF1B4332) // Subtitles/Footer
 val VeryDarkGreen = Color(0xFF081C15) // Main typography
 
 val ErrorRed = Color(0xFFFF3333)
+
+// MINIMALIST COLORS
+
+val White = Color(0xFFFFFFFF) // Main background
+val LightGray = Color(0xFFF3F3F3) // Surface/Cards
+val Black = Color(0xFF000000)

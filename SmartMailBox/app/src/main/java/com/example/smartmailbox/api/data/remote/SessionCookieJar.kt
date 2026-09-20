@@ -1,4 +1,4 @@
-package com.example.smartmailbox.api.data
+package com.example.smartmailbox.api.data.remote
 
 import okhttp3.Cookie
 import okhttp3.CookieJar

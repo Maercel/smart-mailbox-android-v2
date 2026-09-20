@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.example.smartmailbox.R
 import com.example.smartmailbox.auth.data.GoogleAuthHelper
 import com.example.smartmailbox.ui.theme.Alata
+import com.example.smartmailbox.ui.theme.Black
 import com.example.smartmailbox.ui.theme.ErrorRed
 import com.example.smartmailbox.ui.theme.VeryDarkGreen
 import kotlinx.coroutines.launch
@@ -75,7 +76,9 @@ fun RegisterView(
             style = MaterialTheme.typography.headlineLarge
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
+
+        //Spacer(modifier = Modifier.height(24.dp))
         /*
         OutlinedTextField(
             value = registerState.username,

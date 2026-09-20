@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartmailbox.api.data.PostMailBoxData
-import com.example.smartmailbox.api.data.RetrofitInstance
+import com.example.smartmailbox.api.data.remote.PostMailBoxData
+import com.example.smartmailbox.api.data.remote.RetrofitInstance
 import com.example.smartmailbox.api.data.ui.APIState
 import com.example.smartmailbox.scanner.ui.ScannerState
 import kotlinx.coroutines.launch

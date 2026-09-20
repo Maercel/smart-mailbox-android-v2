@@ -1,6 +1,7 @@
 package com.example.smartmailbox.ui.theme
 
 import android.app.Activity
+import android.hardware.lights.Light
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,6 +10,8 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.platform.LocalContext
 
 /*
@@ -38,22 +41,22 @@ private val LightColorScheme = lightColorScheme(
 */
 private val AppColorScheme = lightColorScheme(
     // main actions
-    primary = Emerald,
-    onPrimary = VeryDarkGreen,
+    primary = LightGray,
+    onPrimary = Black,
 
     // less important actions
-    secondary = Jade,
-    onSecondary = VeryDarkGreen,
+    secondary = LightGray,
+    onSecondary = Black,
 
-    background = LightMint,
-    onBackground = VeryDarkGreen,
+    background = White,
+    onBackground = Black,
 
     // base for things on top of background (cards)
-    surface = LightSeafoam,
-    onSurface = VeryDarkGreen,
+    surface = LightGray,
+    onSurface = Color.Green,
 
     // highlights
-    tertiary = MediumMint
+    tertiary = Color.Green
 )
 
 @Composable

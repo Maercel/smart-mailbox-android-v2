@@ -1,6 +1,6 @@
 package com.example.smartmailbox.api.data.ui
 
-import com.example.smartmailbox.api.data.PostMailBoxDataResponse
+import com.example.smartmailbox.api.data.remote.PostMailBoxDataResponse
 
 data class APIState(
     val response: PostMailBoxDataResponse? = null,

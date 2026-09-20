@@ -111,7 +111,7 @@ fun App() {
                     AppFooter(navController = navController)
                 }
             }
-        ) { paddingValues ->
+        ) { paddingValues ->    
             NavHost(
                 navController = navController,
                 startDestination = NavigationScreen.Home.route,

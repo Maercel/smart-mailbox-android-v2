@@ -46,7 +46,7 @@ val Typography = Typography(
         fontSize = 32.sp,
         lineHeight = 40.sp,
         letterSpacing = .5.sp,
-        color = VeryDarkGreen
+        color = Black
     ),
     labelSmall = TextStyle(
         fontFamily = Alata,

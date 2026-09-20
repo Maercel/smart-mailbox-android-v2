@@ -1,5 +1,7 @@
 package com.example.smartmailbox
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.NavigationBar
@@ -14,10 +16,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.smartmailbox.navigation.domain.NavigationItem
 import com.example.smartmailbox.navigation.ui.NavigationScreen
+import com.example.smartmailbox.ui.theme.Black
 import com.example.smartmailbox.ui.theme.DarkGreen
 import com.example.smartmailbox.ui.theme.ForestGreen
+import com.example.smartmailbox.ui.theme.LightGray
 import com.example.smartmailbox.ui.theme.LightMint
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun AppFooter(
     modifier: Modifier = Modifier,
@@ -59,16 +64,24 @@ fun AppFooter(
     }
     */
     NavigationBar(
-        containerColor = DarkGreen,
-        contentColor = LightMint
+        containerColor = LightGray,
+        contentColor = Black
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = currentRoute == item.route,
                 onClick = {
+                    navController.currentBackStack.value.forEachIndexed { index, entry ->
+                        Log.d(
+                            "NAV_DEBUG",
+                            "[$index] ${entry.destination.route}"
+                        )
+                    }
+
                     if (currentRoute == NavigationScreen.Profile.route) {
                         navController.popBackStack() // rough patch for profile screen
                     }
+
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true // pause and save
@@ -76,6 +89,7 @@ fun AppFooter(
                         launchSingleTop = true // prevent duplicates
                         restoreState = true // restore previous saved state of screen
                     }
+
                 },
                 icon = {
                     Icon(
@@ -92,11 +106,11 @@ fun AppFooter(
                 },
 
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = LightMint,
-                    unselectedIconColor = LightMint.copy(alpha = 0.7f),
-                    selectedTextColor = LightMint,
-                    unselectedTextColor = LightMint.copy(alpha = 0.7f),
-                    indicatorColor = ForestGreen.copy(alpha = 0.3f)
+                    selectedIconColor = Black,
+                    unselectedIconColor = Black.copy(alpha = 0.8f),
+                    selectedTextColor = Black,
+                    unselectedTextColor = Black.copy(alpha = 0.8f),
+                    indicatorColor = Black.copy(alpha = 0.3f)
                 )
             )
         }
