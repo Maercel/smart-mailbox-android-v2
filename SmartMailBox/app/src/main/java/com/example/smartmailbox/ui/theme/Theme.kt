@@ -52,7 +52,7 @@ private val AppColorScheme = lightColorScheme(
     onBackground = Black,
 
     // base for things on top of background (cards)
-    surface = LightGray,
+    surface = White,
     onSurface = Color.Green,
 
     // highlights

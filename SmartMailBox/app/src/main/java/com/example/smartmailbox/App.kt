@@ -192,7 +192,6 @@ fun App() {
                 }
 
                 composable(NavigationScreen.Log.route) { LogView(logModel, paddingValues) }
-                composable(NavigationScreen.Log.route) { LogView(logModel, paddingValues) }
             }
             // MailBoxView(mailBoxViewModel, paddingValues)
             // HomeView(paddingValues = paddingValues)

@@ -126,7 +126,7 @@ fun UnlockMailboxScreen(
             PlayAgainButton(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(8.dp),
+                    .padding(16.dp),
                 mailBoxViewModel = mailBoxViewModel,
                 onClick = {
                     mailBoxViewModel.replayWavFile()

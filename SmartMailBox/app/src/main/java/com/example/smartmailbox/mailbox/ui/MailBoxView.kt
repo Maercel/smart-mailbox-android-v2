@@ -117,7 +117,7 @@ fun MailBoxView(
             onClick = onBackButton,
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(8.dp)
+                .padding(16.dp)
         ) {
             Icon(
                 painter = painterResource(R.drawable.arrow_back),

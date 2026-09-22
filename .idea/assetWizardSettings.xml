@@ -356,8 +356,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="unlocked" />
-                            <entry key="sourceFile" value="C:\Users\Marcel\Downloads\lock_open_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
+                            <entry key="outputName" value="add_crosshair" />
+                            <entry key="sourceFile" value="C:\Users\Marcel\Downloads\add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
                           </map>
                         </option>
                       </PersistentState>
