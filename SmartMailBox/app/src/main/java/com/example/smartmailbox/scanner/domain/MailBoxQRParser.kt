@@ -9,6 +9,7 @@ object MailBoxQRParser {
             throw IllegalArgumentException("Invalid mailbox QR URL")
         }
 
-        return segments[4].toInt()
+        return segments[4].toIntOrNull()
+            ?: throw IllegalArgumentException("Invalid mailbox ID")
     }
 }

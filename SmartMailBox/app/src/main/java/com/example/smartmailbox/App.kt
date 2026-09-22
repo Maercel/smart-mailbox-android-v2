@@ -29,6 +29,7 @@ import com.example.smartmailbox.auth.ui.login.LoginViewModel
 import com.example.smartmailbox.mailbox.ui.MailBoxViewModel
 import com.example.smartmailbox.profile.ui.ProfileViewModel
 import com.example.smartmailbox.auth.ui.register.RegisterViewModel
+import com.example.smartmailbox.mailbox.ui.UnlockMailboxScreen
 
 
 @Composable
@@ -56,7 +57,9 @@ fun App() {
     val showMainBars = currentRoute !in listOf(
         NavigationScreen.Login.route,
         NavigationScreen.Register.route,
-        NavigationScreen.FaceVerify.route
+        NavigationScreen.FaceVerify.route,
+        NavigationScreen.Scan.route,
+        NavigationScreen.UnlockMailbox.route
     )
 
     val isLoggedIn by appViewModel.isLoggedIn.collectAsStateWithLifecycle()
@@ -111,7 +114,7 @@ fun App() {
                     AppFooter(navController = navController)
                 }
             }
-        ) { paddingValues ->    
+        ) { paddingValues ->
             NavHost(
                 navController = navController,
                 startDestination = NavigationScreen.Home.route,
@@ -171,7 +174,24 @@ fun App() {
                     )
                 }
                 composable(NavigationScreen.Home.route) { HomeView(homeViewModel, paddingValues) }
-                composable(NavigationScreen.Scan.route) { MailBoxView(mailBoxViewModel, paddingValues) }
+                composable(NavigationScreen.Scan.route) {
+                    MailBoxView(
+                        mailBoxViewModel,
+                        paddingValues,
+                        onBackButton = { navController.popBackStack() },
+                        onOpenMailbox = {
+                            navController.navigate(NavigationScreen.UnlockMailbox.route)
+                        }
+                    )
+                }
+                composable(NavigationScreen.UnlockMailbox.route) {
+                    UnlockMailboxScreen(
+                        mailBoxViewModel,
+                        onBackButton = { navController.popBackStack() }
+                    )
+                }
+
+                composable(NavigationScreen.Log.route) { LogView(logModel, paddingValues) }
                 composable(NavigationScreen.Log.route) { LogView(logModel, paddingValues) }
             }
             // MailBoxView(mailBoxViewModel, paddingValues)

@@ -18,11 +18,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.smartmailbox.scanner.domain.QRCodeAnalyzer
+import com.example.smartmailbox.ui.theme.Black
+import com.example.smartmailbox.ui.theme.LightGray
 
 @Composable
 fun QRCodeScannerView(
@@ -49,6 +59,7 @@ fun QRCodeScannerView(
         onResult = { granted -> hasCamPermissions = granted }
     )
 
+    // run this effect once it enters composition
     LaunchedEffect(key1 = true) {
         launcher.launch(Manifest.permission.CAMERA)
     }
@@ -100,7 +111,8 @@ fun QRCodeScannerView(
 
                 previewView
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
         )
     }
 }
