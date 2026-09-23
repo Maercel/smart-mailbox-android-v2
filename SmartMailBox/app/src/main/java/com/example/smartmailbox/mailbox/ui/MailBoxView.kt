@@ -123,7 +123,7 @@ fun MailBoxView(
                 painter = painterResource(R.drawable.arrow_back),
                 contentDescription = stringResource(R.string.back_button),
                 tint = LightGray,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(28.dp)
             )
         }
 

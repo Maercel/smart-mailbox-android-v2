@@ -54,7 +54,9 @@ fun TopAppBar(
                     painter = painterResource(R.drawable.inbox_icon),
                     contentDescription = "Inbox",
                     tint = Black,
-                    // no modifier needed, icon's default to 24.dp (Material spec)
+                    modifier = Modifier
+                        .size(28.dp)
+                    // icon's default is 24.dp
                 )
             }
 
@@ -77,7 +79,8 @@ fun TopAppBar(
                     painter = painterResource(R.drawable.account_box),
                     contentDescription = "Profile",
                     tint = Black,
-                    // no modifier needed, icon's default to 24.dp (Material spec)
+                    modifier = Modifier
+                        .size(28.dp)
                 )
             }
         }
