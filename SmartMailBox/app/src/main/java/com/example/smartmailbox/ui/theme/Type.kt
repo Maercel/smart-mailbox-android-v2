@@ -42,10 +42,18 @@ val Typography = Typography(
     ),
     headlineLarge = TextStyle(
         fontFamily = Alata,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 32.sp,
+        lineHeight = 40.sp,
+        letterSpacing = .5.sp,
+        color = Black
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = Alata,
+        fontWeight = FontWeight.ExtraBold,
         fontSize = 24.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 1.5.sp,
+        lineHeight = 28.sp,
+        letterSpacing = .5.sp,
         color = Black
     ),
     labelSmall = TextStyle(

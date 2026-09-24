@@ -72,8 +72,7 @@ fun AddMailboxView(
             Text(
                 modifier = Modifier.align(Alignment.Center),
                 text = "Add Mailbox",
-                style = MaterialTheme.typography.headlineLarge,
-                letterSpacing = 1.5.sp
+                style = MaterialTheme.typography.headlineMedium
             )
         }
         Column(
