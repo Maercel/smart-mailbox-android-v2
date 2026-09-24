@@ -13,6 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.smartmailbox.addmailbox.ui.AddMailboxView
+import com.example.smartmailbox.addmailbox.ui.AddMailboxViewModel
 import com.example.smartmailbox.navigation.ui.NavigationScreen
 import com.example.smartmailbox.ui.theme.SmartMailBoxTheme
 import com.example.smartmailbox.auth.ui.faceverify.FaceVerifyView
@@ -44,6 +46,7 @@ fun App() {
 
     val homeViewModel: HomeViewModel = viewModel()
     val mailBoxViewModel: MailBoxViewModel = viewModel()
+    val addMailboxViewModel: AddMailboxViewModel = viewModel()
     val logModel: LogViewModel = viewModel()
     val loginModel: LoginViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel()
@@ -173,7 +176,17 @@ fun App() {
                         }
                     )
                 }
-                composable(NavigationScreen.Home.route) { HomeView(homeViewModel, paddingValues) }
+                composable(NavigationScreen.Home.route) {
+                    HomeView(
+                        homeViewModel,
+                        paddingValues,
+                        navigateToAddMailboxScreen = {
+                            navController.navigate(NavigationScreen.AddMailbox.route) {
+                            }
+                        }
+                    )
+
+                }
                 composable(NavigationScreen.Scan.route) {
                     MailBoxView(
                         mailBoxViewModel,
@@ -188,6 +201,15 @@ fun App() {
                     UnlockMailboxScreen(
                         mailBoxViewModel,
                         onBackButton = { navController.popBackStack() }
+                    )
+                }
+                composable(NavigationScreen.AddMailbox.route) {
+                    AddMailboxView(
+                        addMailboxViewModel,
+                        paddingValues,
+                        onBackButton = {
+                            navController.popBackStack()
+                        }
                     )
                 }
 

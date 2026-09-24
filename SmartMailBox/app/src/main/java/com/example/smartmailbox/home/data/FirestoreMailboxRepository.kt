@@ -30,7 +30,7 @@ class FirestoreMailboxRepository(
             id = id,
             name = name,
             batteryPercent = 100,
-            isConnected = false,
+            isConnected = true,
             deviceModelId = deviceModelId
         )
         collection.document(id).set(dto).await()

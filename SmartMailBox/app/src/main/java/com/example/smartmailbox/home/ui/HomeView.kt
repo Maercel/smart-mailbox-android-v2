@@ -31,7 +31,8 @@ import com.example.smartmailbox.home.ui.components.AddNewMailboxButton
 @Composable
 fun HomeView(
     homeViewModel: HomeViewModel,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigateToAddMailboxScreen: () -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
 
@@ -85,7 +86,7 @@ fun HomeView(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(),
-            onClick = { /*TODO: ADD*/ }
+            onClick = { navigateToAddMailboxScreen() }
         )
     }
 }
