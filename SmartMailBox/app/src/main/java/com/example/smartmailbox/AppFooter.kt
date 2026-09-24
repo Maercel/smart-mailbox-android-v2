@@ -82,6 +82,10 @@ fun AppFooter(
                         navController.popBackStack() // rough patch for profile screen
                     }
 
+                    if (currentRoute == NavigationScreen.Inbox.route) {
+                        navController.popBackStack() // rough patch for profile screen
+                    }
+
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true // pause and save
