@@ -20,29 +20,47 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.smartmailbox.R
+import com.example.smartmailbox.addmailbox.domain.AddMailboxEvent
 import com.example.smartmailbox.addmailbox.ui.components.AddMailboxButton
+import com.example.smartmailbox.ui.theme.Alata
 import com.example.smartmailbox.ui.theme.Black
+import com.example.smartmailbox.ui.theme.ErrorRed
 import com.example.smartmailbox.ui.theme.LightGray
 import com.example.smartmailbox.ui.theme.VeryDarkGreen
 
+// NOTE: Device password + verification code (hashed) were left
+// out. Hashing correctly requires a Cloud Function, which requires the Blaze
+// plan (not paying that). Dropping this also means the device model/icon is now assigned by
+// MailboxDeviceModelGenerator instead of user input — see FirestoreMailboxRepository.addMailbox.
 @Composable
 fun AddMailboxView(
     addMailboxViewModel: AddMailboxViewModel,
     paddingValues: PaddingValues,
-    onBackButton: () -> Unit
+    onBackButton: () -> Unit,
+    onMailboxAdded: () -> Unit,
 ) {
 
     val addMailboxState by addMailboxViewModel.addMailboxState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        addMailboxViewModel.events.collect { event ->
+            when (event) {
+                AddMailboxEvent.MailboxAdded -> { onMailboxAdded() }
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -99,7 +117,7 @@ fun AddMailboxView(
                     cursorColor = VeryDarkGreen
                 )
             )
-
+            /*
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
@@ -155,11 +173,24 @@ fun AddMailboxView(
                     cursorColor = VeryDarkGreen
                 )
             )
+            */
 
+            addMailboxState.errorMessage?.let { errorMessage ->
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = errorMessage,
+                    fontFamily = Alata,
+                    fontSize = 14.sp,
+                    color = ErrorRed,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
 
             AddMailboxButton(
                 modifier = Modifier,
+                isLoading = addMailboxState.isLoading,
                 onAddButtonClick = {
                     addMailboxViewModel.addMailbox()
                 }

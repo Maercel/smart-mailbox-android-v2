@@ -59,6 +59,13 @@ class LoginViewModel : ViewModel() {
                         isLoading = false
                     )
                 }
+                // short for now
+                else {
+                    loginState = loginState.copy(
+                        isLoading = false,
+                        errorMessage = "Invalid credentials"
+                    )
+                }
             } catch (e: Exception) {
                 loginState = loginState.copy(
                     isLoading = false,

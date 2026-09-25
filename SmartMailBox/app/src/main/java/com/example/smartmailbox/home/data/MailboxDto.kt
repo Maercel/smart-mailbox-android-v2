@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 
 data class MailboxDto(
     val id: String = "",
+    val ownerId: String = "",
     val name: String = "",
     val batteryPercent: Int = 0,
     val isConnected: Boolean = false,

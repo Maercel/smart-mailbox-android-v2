@@ -8,6 +8,7 @@ import com.example.smartmailbox.home.domain.Mailbox
 import com.example.smartmailbox.home.domain.MailboxDeviceCatalog
 import com.example.smartmailbox.home.domain.MailboxDeviceModel
 import com.example.smartmailbox.home.domain.toDomain
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,8 @@ sealed interface HomeUiState {
 class HomeViewModel() : ViewModel() {
 
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val repository: FirestoreMailboxRepository = FirestoreMailboxRepository(firestore)
+    private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val repository: FirestoreMailboxRepository = FirestoreMailboxRepository(firestore, firebaseAuth)
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -45,8 +47,7 @@ class HomeViewModel() : ViewModel() {
 
 
     init {
-        //observeMailboxes()
-        demoData()
+        observeMailboxes()
     }
 
     private fun demoData() {

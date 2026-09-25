@@ -3,12 +3,15 @@ package com.example.smartmailbox.auth.domain
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
@@ -20,13 +23,25 @@ class AuthRepository(
     val isLoggedIn: Boolean
         get() = firebaseAuth.currentUser != null
 
+    val currentUserId: String?
+        get() = firebaseAuth.currentUser?.uid
     val authStateFlow: Flow<Boolean?> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->
             trySend(auth.currentUser != null)
         }
+
         firebaseAuth.addAuthStateListener(listener)
         awaitClose { firebaseAuth.removeAuthStateListener(listener) }
     }
+
+    val currentUserIdFlow: Flow<String?> = callbackFlow {
+        val listener = FirebaseAuth.AuthStateListener {
+            trySend(it.currentUser?.uid)
+        }
+
+        firebaseAuth.addAuthStateListener(listener)
+        awaitClose { firebaseAuth.removeAuthStateListener(listener) }
+    }.distinctUntilChanged()
 
     suspend fun registerAccount(
         email: String,

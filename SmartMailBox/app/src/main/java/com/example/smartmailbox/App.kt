@@ -209,6 +209,9 @@ fun App() {
                         paddingValues,
                         onBackButton = {
                             navController.popBackStack()
+                        },
+                        onMailboxAdded = {
+                            navController.popBackStack()
                         }
                     )
                 }

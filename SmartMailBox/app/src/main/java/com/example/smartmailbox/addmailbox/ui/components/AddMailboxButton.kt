@@ -12,10 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.smartmailbox.addmailbox.ui.AddMailboxState
 
 @Composable
 fun AddMailboxButton(
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     onAddButtonClick: () -> Unit
 ) {
     Button(
@@ -28,18 +30,16 @@ fun AddMailboxButton(
             .padding(0.dp, 8.dp),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
         shape = RoundedCornerShape(5.dp),
-        //enabled = !state.isLoading
+        enabled = !isLoading
     ) {
-        /*
-        if (state.isLoading) {
+
+        if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(24.dp),
                 strokeWidth = 2.dp
             )
         } else {
-        */
-
             Text("Add Mailbox")
-        //}
+        }
     }
 }
