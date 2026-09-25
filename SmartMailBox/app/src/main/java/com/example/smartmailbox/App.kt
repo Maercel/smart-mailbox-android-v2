@@ -31,6 +31,7 @@ import com.example.smartmailbox.auth.ui.login.LoginViewModel
 import com.example.smartmailbox.mailbox.ui.MailBoxViewModel
 import com.example.smartmailbox.profile.ui.ProfileViewModel
 import com.example.smartmailbox.auth.ui.register.RegisterViewModel
+import com.example.smartmailbox.inbox.ui.InboxView
 import com.example.smartmailbox.mailbox.ui.UnlockMailboxScreen
 
 
@@ -105,6 +106,12 @@ fun App() {
                     TopAppBar(
                         onProfileClick = {
                             navController.navigate(NavigationScreen.Profile.route) {
+                                // so we don't stack profile screens like Home -> Profile -> Profile -> Profile
+                                launchSingleTop = true
+                            }
+                        },
+                        onInboxClick = {
+                            navController.navigate(NavigationScreen.Inbox.route) {
                                 // so we don't stack profile screens like Home -> Profile -> Profile -> Profile
                                 launchSingleTop = true
                             }
@@ -213,6 +220,13 @@ fun App() {
                         onMailboxAdded = {
                             navController.popBackStack()
                         }
+                    )
+                }
+
+                composable(NavigationScreen.Inbox.route) {
+                    InboxView(
+                        paddingValues,
+                        onBackButton = { navController.popBackStack() }
                     )
                 }
 

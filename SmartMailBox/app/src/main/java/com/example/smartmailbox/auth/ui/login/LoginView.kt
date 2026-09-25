@@ -161,7 +161,7 @@ fun LoginView(
         ) {
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = VeryDarkGreen.copy(alpha = 0.7f)
+                color = Black.copy(alpha = 0.7f)
 
             )
 

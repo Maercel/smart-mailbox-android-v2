@@ -202,19 +202,19 @@ fun RegisterView(
         ) {
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = VeryDarkGreen.copy(alpha = 0.7f)
+                color = Black.copy(alpha = 0.7f)
             )
 
             Text(
                 text = "OR",
                 modifier = Modifier.padding(horizontal = 12.dp),
                 style = MaterialTheme.typography.bodySmall,
-                color = VeryDarkGreen.copy(alpha = 0.7f)
+                color = Black.copy(alpha = 0.7f)
             )
 
             HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                color = VeryDarkGreen.copy(alpha = 0.7f)
+                color = Black.copy(alpha = 0.7f)
             )
         }
 

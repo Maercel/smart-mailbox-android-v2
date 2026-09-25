@@ -28,7 +28,8 @@ import com.example.smartmailbox.ui.theme.Black
 @Composable
 fun TopAppBar(
     modifier: Modifier = Modifier,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    onInboxClick: () -> Unit
 ) {
     val appTitle = stringResource(R.string.app_name)
 
@@ -45,7 +46,7 @@ fun TopAppBar(
                 .height(64.dp),
         ) {
             IconButton(
-                onClick = {},
+                onClick = { onInboxClick() },
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .fillMaxHeight()
