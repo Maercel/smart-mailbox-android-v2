@@ -12,27 +12,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.smartmailbox.addmailbox.ui.AddMailboxState
 import com.example.smartmailbox.ui.theme.Black
 import com.example.smartmailbox.ui.theme.LightGray
 
 @Composable
-fun AddMailboxButton(
-    modifier: Modifier = Modifier,
+fun VerifyDeviceButton(
     isLoading: Boolean,
-    onAddButtonClick: () -> Unit
+    enabled: Boolean,
+    onVerifyButtonClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    val isClickable = enabled && !isLoading
+
     Button(
-        onClick = {
-            onAddButtonClick()
-        },
-        modifier = Modifier
+        onClick = onVerifyButtonClick,
+        modifier = modifier
             .fillMaxWidth()
             .height(72.dp)
-            .padding(0.dp, 8.dp),
+            .padding(vertical = 8.dp),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
         shape = RoundedCornerShape(5.dp),
-        enabled = !isLoading,
+        enabled = isClickable,
         colors = ButtonDefaults.buttonColors(
             containerColor = LightGray,
             contentColor = Black,
@@ -40,16 +40,16 @@ fun AddMailboxButton(
             disabledContentColor = Black.copy(alpha = 0.4f),
         ),
     ) {
-
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(24.dp),
-                strokeWidth = 2.dp
+                strokeWidth = 2.dp,
+                color = Black
             )
         } else {
             Text(
-                text = "Add Mailbox",
-                color = if (!isLoading) Black else Black.copy(alpha = 0.4f)
+                text = "Verify Device",
+                color = if (isClickable) Black else Black.copy(alpha = 0.4f)
             )
         }
     }

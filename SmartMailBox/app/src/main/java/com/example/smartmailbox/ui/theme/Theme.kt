@@ -53,7 +53,7 @@ private val AppColorScheme = lightColorScheme(
 
     // base for things on top of background (cards)
     surface = White,
-    onSurface = Color.Green,
+    onSurface = Black,
 
     // highlights
     tertiary = Color.Green

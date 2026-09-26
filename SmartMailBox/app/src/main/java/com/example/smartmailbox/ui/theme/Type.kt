@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.sp
 val Typography = Typography(
     // Text
     bodyLarge = TextStyle(
-        color = VeryDarkGreen,
+        color = Black,
         fontFamily = Alata,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
@@ -18,7 +18,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
-        color = VeryDarkGreen,
+        color = Black,
         fontFamily = Alata,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
@@ -26,7 +26,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     bodySmall = TextStyle(
-        color = VeryDarkGreen,
+        color = Black,
         fontFamily = Alata,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
@@ -38,6 +38,13 @@ val Typography = Typography(
         fontWeight = FontWeight.ExtraBold,
         fontSize = 24.sp,
         lineHeight = 28.sp,
+        letterSpacing = .5.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = Alata,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp,
+        lineHeight = 24.sp,
         letterSpacing = .5.sp
     ),
     headlineLarge = TextStyle(
@@ -59,13 +66,13 @@ val Typography = Typography(
     labelSmall = TextStyle(
         fontFamily = Alata,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
+        fontSize = 14.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),
     // default for text inside button
     labelLarge = TextStyle(
-        color = VeryDarkGreen,
+        color = Black,
         fontFamily = Alata,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,

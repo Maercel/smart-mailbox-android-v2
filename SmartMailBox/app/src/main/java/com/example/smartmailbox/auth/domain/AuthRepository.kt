@@ -25,6 +25,8 @@ class AuthRepository(
 
     val currentUserId: String?
         get() = firebaseAuth.currentUser?.uid
+
+
     val authStateFlow: Flow<Boolean?> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->
             trySend(auth.currentUser != null)

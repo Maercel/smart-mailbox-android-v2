@@ -1,5 +1,6 @@
 package com.example.smartmailbox.addmailbox.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,23 +26,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.smartmailbox.R
 import com.example.smartmailbox.addmailbox.domain.AddMailboxEvent
+import com.example.smartmailbox.addmailbox.domain.DeviceVerificationCodeFormat
 import com.example.smartmailbox.addmailbox.ui.components.AddMailboxButton
+import com.example.smartmailbox.addmailbox.ui.components.VerifyDeviceButton
+import com.example.smartmailbox.addmailbox.ui.steps.MailboxSetupStep
+import com.example.smartmailbox.addmailbox.ui.steps.DeviceVerificationStep
+import com.example.smartmailbox.ui.components.ErrorText
+import com.example.smartmailbox.ui.components.ScreenHeader
 import com.example.smartmailbox.ui.theme.Alata
 import com.example.smartmailbox.ui.theme.Black
 import com.example.smartmailbox.ui.theme.ErrorRed
-import com.example.smartmailbox.ui.theme.LightGray
-import com.example.smartmailbox.ui.theme.VeryDarkGreen
 
-// NOTE: Device password + verification code (hashed) were left
-// out. Hashing correctly requires a Cloud Function, which requires the Blaze
-// plan (not paying that). Dropping this also means the device model/icon is now assigned by
-// MailboxDeviceModelGenerator instead of user input — see FirestoreMailboxRepository.addMailbox.
 @Composable
 fun AddMailboxView(
     addMailboxViewModel: AddMailboxViewModel,
@@ -51,48 +49,33 @@ fun AddMailboxView(
     onBackButton: () -> Unit,
     onMailboxAdded: () -> Unit,
 ) {
-
     val addMailboxState by addMailboxViewModel.addMailboxState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         addMailboxViewModel.events.collect { event ->
             when (event) {
-                AddMailboxEvent.MailboxAdded -> { onMailboxAdded() }
+                AddMailboxEvent.MailboxAdded -> onMailboxAdded()
             }
         }
     }
 
-    Box(
+    // system back
+    BackHandler(enabled = addMailboxState.addMailboxStep == AddMailboxStep.MailboxSetup) {
+        addMailboxViewModel.onBackToVerification()
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-    )
-    {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            IconButton(
-                onClick = onBackButton,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.arrow_back),
-                    contentDescription = stringResource(R.string.back_button),
-                    tint = Black,
-                    modifier = Modifier.size(28.dp)
-                )
+    ) {
+        ScreenHeader(
+            title = if (addMailboxState.addMailboxStep == AddMailboxStep.MailboxSetup) "Add Mailbox" else "Verify Device",
+            onBack = {
+                if (addMailboxState.addMailboxStep == AddMailboxStep.MailboxSetup) addMailboxViewModel.onBackToVerification() else onBackButton()
             }
+        )
 
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "Add Mailbox",
-                style = MaterialTheme.typography.headlineMedium
-            )
-        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -100,101 +83,19 @@ fun AddMailboxView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
-
-            OutlinedTextField(
-                value = addMailboxState.label,
-                onValueChange = addMailboxViewModel::onLabelChange,
-                label = { Text("Mailbox Label") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                enabled = !addMailboxState.isLoading,
-                shape = RoundedCornerShape(5.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = VeryDarkGreen, // COLORS MATE!
-                    unfocusedBorderColor = VeryDarkGreen,
-                    focusedLabelColor = VeryDarkGreen,
-                    cursorColor = VeryDarkGreen
+            when (addMailboxState.addMailboxStep) {
+                AddMailboxStep.DeviceVerification -> DeviceVerificationStep(
+                    state = addMailboxState,
+                    onCodeChange = addMailboxViewModel::onVerificationCodeChange,
+                    onVerify = addMailboxViewModel::onVerifyClick
                 )
-            )
-            /*
-            Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedTextField(
-                value = addMailboxState.password,
-                onValueChange = addMailboxViewModel::onPasswordChange,
-                label = { Text("Password") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                enabled = !addMailboxState.isLoading,
-                shape = RoundedCornerShape(5.dp),
-                visualTransformation = PasswordVisualTransformation(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = VeryDarkGreen,
-                    unfocusedBorderColor = VeryDarkGreen,
-                    focusedLabelColor = VeryDarkGreen,
-                    cursorColor = VeryDarkGreen
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            OutlinedTextField(
-                value = addMailboxState.confirmPassword,
-                onValueChange = addMailboxViewModel::onConfirmPasswordChange,
-                label = { Text("Repeat Password") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                enabled = !addMailboxState.isLoading,
-                shape = RoundedCornerShape(5.dp),
-                visualTransformation = PasswordVisualTransformation(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = VeryDarkGreen,
-                    unfocusedBorderColor = VeryDarkGreen,
-                    focusedLabelColor = VeryDarkGreen,
-                    cursorColor = VeryDarkGreen
-                )
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            OutlinedTextField(
-                value = addMailboxState.verificationCode,
-                onValueChange = addMailboxViewModel::onVerificationCodeChange,
-                label = { Text("Verification Code") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                enabled = !addMailboxState.isLoading,
-                shape = RoundedCornerShape(5.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = VeryDarkGreen,
-                    unfocusedBorderColor = VeryDarkGreen,
-                    focusedLabelColor = VeryDarkGreen,
-                    cursorColor = VeryDarkGreen
-                )
-            )
-            */
-
-            addMailboxState.errorMessage?.let { errorMessage ->
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = errorMessage,
-                    fontFamily = Alata,
-                    fontSize = 14.sp,
-                    color = ErrorRed,
-                    fontWeight = FontWeight.Bold
+                AddMailboxStep.MailboxSetup -> MailboxSetupStep(
+                    state = addMailboxState,
+                    onLabelChange = addMailboxViewModel::onLabelChange,
+                    onAdd = addMailboxViewModel::addMailbox
                 )
             }
-            Spacer(modifier = Modifier.height(24.dp))
-
-            AddMailboxButton(
-                modifier = Modifier,
-                isLoading = addMailboxState.isLoading,
-                onAddButtonClick = {
-                    addMailboxViewModel.addMailbox()
-                }
-            )
         }
     }
 }

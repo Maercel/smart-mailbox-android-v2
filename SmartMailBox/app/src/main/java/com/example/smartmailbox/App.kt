@@ -15,6 +15,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.smartmailbox.addmailbox.ui.AddMailboxView
 import com.example.smartmailbox.addmailbox.ui.AddMailboxViewModel
+import com.example.smartmailbox.addmailbox.ui.DeviceVerificationView
 import com.example.smartmailbox.navigation.ui.NavigationScreen
 import com.example.smartmailbox.ui.theme.SmartMailBoxTheme
 import com.example.smartmailbox.auth.ui.faceverify.FaceVerifyView
@@ -228,7 +229,7 @@ fun App() {
                         paddingValues,
                         onBackButton = { navController.popBackStack() }
                     )
-                }
+               }
 
                 composable(NavigationScreen.Log.route) { LogView(logModel, paddingValues) }
             }
