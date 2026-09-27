@@ -25,6 +25,20 @@ class FirestoreMailboxRepository(
 
     private val authRepository = AuthRepository(firebaseAuth, firestore)
 
+    override fun observeMailbox(id: String): Flow<MailboxDto?> = callbackFlow {
+        val registration = mailboxesCollection.document(id)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.toObject(MailboxDto::class.java))
+            }
+        awaitClose {
+            registration.remove()
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun observeMailboxes(): Flow<List<MailboxDto>> =
         authRepository.currentUserIdFlow.flatMapLatest { uid ->

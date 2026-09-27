@@ -70,8 +70,4 @@ class HomeViewModel() : ViewModel() {
                 }
         }
     }
-
-    fun onMailboxCardClick(id: String) {
-        // TODO: navigate to details
-    }
 }

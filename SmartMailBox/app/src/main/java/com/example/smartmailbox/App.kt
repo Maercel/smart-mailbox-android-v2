@@ -9,10 +9,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.smartmailbox.addmailbox.ui.AddMailboxView
 import com.example.smartmailbox.addmailbox.ui.AddMailboxViewModel
 import com.example.smartmailbox.addmailbox.ui.DeviceVerificationView
@@ -34,6 +36,8 @@ import com.example.smartmailbox.profile.ui.ProfileViewModel
 import com.example.smartmailbox.auth.ui.register.RegisterViewModel
 import com.example.smartmailbox.inbox.ui.InboxView
 import com.example.smartmailbox.mailbox.ui.UnlockMailboxScreen
+import com.example.smartmailbox.mailboxdetail.ui.MailboxDetailView
+import com.example.smartmailbox.mailboxdetail.ui.MailboxDetailViewModel
 
 
 @Composable
@@ -191,6 +195,9 @@ fun App() {
                         navigateToAddMailboxScreen = {
                             navController.navigate(NavigationScreen.AddMailbox.route) {
                             }
+                        },
+                        onMailboxClick = { mailboxId ->
+                            navController.navigate(NavigationScreen.MailboxDetail.createRoute(mailboxId))
                         }
                     )
 
@@ -230,6 +237,31 @@ fun App() {
                         onBackButton = { navController.popBackStack() }
                     )
                }
+
+                composable(
+                    route = NavigationScreen.MailboxDetail.route,
+                    arguments = listOf(
+                        // Handles address shaped like this: mailbox_detail/{something(mailboxId)}
+                        navArgument(NavigationScreen.MailboxDetail.ARG_MAILBOX_ID) { type = NavType.StringType }
+                    )
+                ) {
+                    // viewModel attaches to the nearest owner (in this case here), so in activity (where I had it before, top of the app)
+                    // it lives until the app closes.
+                    // one instance per opened mailbox
+                    val mailboxDetailViewModel: MailboxDetailViewModel = viewModel()
+
+                    MailboxDetailView(
+                        mailboxDetailViewModel = mailboxDetailViewModel,
+                        paddingValues = paddingValues,
+                        onBack = { navController.popBackStack() },
+                        onSettingsClick = { },
+                        onActivityClick = { },
+                        onAccessClick = { },
+                        onHelpClick = { },
+                        onUnlockClick = { },
+                        onLockdownClick = { }
+                    )
+                }
 
                 composable(NavigationScreen.Log.route) { LogView(logModel, paddingValues) }
             }

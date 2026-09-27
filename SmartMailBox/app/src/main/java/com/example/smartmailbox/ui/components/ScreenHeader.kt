@@ -1,6 +1,7 @@
 package com.example.smartmailbox.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,9 +20,16 @@ import com.example.smartmailbox.R
 import com.example.smartmailbox.ui.theme.Black
 
 @Composable
-fun ScreenHeader(title: String, onBack: () -> Unit) {
+fun ScreenHeader(
+    title: String,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    // = {} default
+    actions: @Composable () -> Unit = {}
+) {
+    // Could also look CenterAlignedTopAppBar
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
     ) {
@@ -43,5 +51,13 @@ fun ScreenHeader(title: String, onBack: () -> Unit) {
             modifier = Modifier.align(Alignment.Center),
             style = MaterialTheme.typography.headlineMedium
         )
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 8.dp)
+        ) {
+            actions()
+        }
     }
 }

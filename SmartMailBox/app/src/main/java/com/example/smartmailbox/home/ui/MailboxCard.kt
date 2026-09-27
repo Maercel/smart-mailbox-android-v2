@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,64 +31,72 @@ fun MailboxCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(5.dp))
-            .background(LightGray)
-            .clickable { onClick() }
-            .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(5.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = LightGray,
+            contentColor = Black
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        modifier = modifier.fillMaxWidth()
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = mailbox.imageRes),
-                contentDescription = mailbox.name,
-                modifier = Modifier.size(72.dp),
-                contentScale = ContentScale.Fit
-            )
-
-            Spacer(Modifier.width(8.dp))
-
-            Column {
-                Text(
-                    text = mailbox.name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+        Column(
+            modifier = modifier
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = mailbox.imageRes),
+                    contentDescription = mailbox.name,
+                    modifier = Modifier.size(72.dp),
+                    contentScale = ContentScale.Fit
                 )
 
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.width(8.dp))
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_battery_android_full),
-                        contentDescription = "Battery percentage",
-                        modifier = Modifier.size(20.dp)
+                Column {
+                    Text(
+                        text = mailbox.name,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
-                    Spacer(Modifier.width(8.dp))
-                    Text("${mailbox.batteryPercent}%")
+
+                    Spacer(Modifier.height(4.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_battery_android_full),
+                            contentDescription = "Battery percentage",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text("${mailbox.batteryPercent}%")
+                    }
                 }
             }
-        }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(5.dp))
-                .background(Color.White)
-                .clickable { onClick() }
-                .padding(horizontal = 16.dp, vertical = 18.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(if (mailbox.isConnected) "Connected" else "Disconnected")
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(Color.White)
+                    .clickable { onClick() }
+                    .padding(horizontal = 16.dp, vertical = 18.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(if (mailbox.isConnected) "Connected" else "Disconnected")
 
-            Icon(
-                painter = painterResource(R.drawable.arrow_forward),
-                contentDescription = "Arrow forward",
-                tint = Black.copy(alpha = .5f),
-                modifier = Modifier.size(16.dp)
-            )
+                Icon(
+                    painter = painterResource(R.drawable.arrow_forward),
+                    contentDescription = "Arrow forward",
+                    tint = Black.copy(alpha = .5f),
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
     }
+
 }

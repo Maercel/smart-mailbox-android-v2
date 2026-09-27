@@ -33,7 +33,7 @@ fun AddNewMailboxButton(
             .fillMaxWidth()
             .height(72.dp)
             .padding(16.dp, 8.dp),
-        elevation = ButtonDefaults.buttonElevation(),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
         shape = RoundedCornerShape(5.dp),
         enabled = true,
         colors = ButtonDefaults.buttonColors(

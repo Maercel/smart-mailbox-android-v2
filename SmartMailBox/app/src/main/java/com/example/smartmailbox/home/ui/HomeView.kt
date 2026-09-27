@@ -32,7 +32,8 @@ import com.example.smartmailbox.home.ui.components.AddNewMailboxButton
 fun HomeView(
     homeViewModel: HomeViewModel,
     paddingValues: PaddingValues,
-    navigateToAddMailboxScreen: () -> Unit
+    navigateToAddMailboxScreen: () -> Unit,
+    onMailboxClick: (mailboxId: String) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
 
@@ -75,7 +76,7 @@ fun HomeView(
                     items(state.mailboxes, key = { it.id }) { mailbox ->
                         MailboxCard(
                             mailbox = mailbox,
-                            onClick = { homeViewModel.onMailboxCardClick(mailbox.id) }
+                            onClick = { onMailboxClick(mailbox.id) }
                         )
                     }
                 }
