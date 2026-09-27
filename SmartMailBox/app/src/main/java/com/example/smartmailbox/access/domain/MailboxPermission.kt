@@ -4,5 +4,4 @@ enum class MailboxPermission {
     UNLOCK,
     VIEW_ACTIVITY,
     MANAGE_ACCESS,
-    FULL_ACCESS
 }
