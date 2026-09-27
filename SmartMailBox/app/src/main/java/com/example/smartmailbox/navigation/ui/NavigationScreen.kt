@@ -11,4 +11,9 @@ sealed class NavigationScreen(val route: String) {
     object UnlockMailbox : NavigationScreen("unlock_mailbox")
     object AddMailbox : NavigationScreen("add_mailbox")
     object Inbox : NavigationScreen("inbox")
+
+    object MailboxDetail : NavigationScreen("mailbox_detail/{mailboxId}") {
+        const val ARG_MAILBOX_ID = "mailboxId"
+        fun createRoute(mailboxId: String) = "mailbox_detail/$mailboxId"
+    }
 }
