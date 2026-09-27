@@ -8,6 +8,7 @@ import com.example.smartmailbox.home.domain.Mailbox
 import com.example.smartmailbox.home.domain.MailboxDeviceCatalog
 import com.example.smartmailbox.home.domain.MailboxDeviceModel
 import com.example.smartmailbox.home.domain.toDomain
+import com.example.smartmailbox.mailboxdetail.domain.LockState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +42,8 @@ class HomeViewModel() : ViewModel() {
             batteryPercent = 87,
             isConnected = true,
             deviceModel = demoModel,
-            imageRes = MailboxDeviceCatalog.imageFor(demoModel)
+            imageRes = MailboxDeviceCatalog.imageFor(demoModel),
+            lockState = LockState.LOCKED
         )
 
 

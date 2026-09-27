@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartmailbox.home.data.FirestoreMailboxRepository
 import com.example.smartmailbox.home.domain.toDomain
+import com.example.smartmailbox.mailboxdetail.domain.ActivityType
 import com.example.smartmailbox.mailboxdetail.domain.LockState
 import com.example.smartmailbox.navigation.ui.NavigationScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -69,6 +70,7 @@ class MailboxDetailViewModel(
                             imageRes = mailbox.imageRes,
                             batteryPercent = mailbox.batteryPercent,
                             isConnected = mailbox.isConnected,
+                            lockState = mailbox.lockState,
                         )
                     }
                 }
@@ -90,7 +92,10 @@ class MailboxDetailViewModel(
         viewModelScope.launch {
             _mailboxDetailState.update { it.copy(isLockPending = true) }
             delay(500.milliseconds) // DEMO: firebase responds
-            _mailboxDetailState.update { it.copy(isLockPending = false, lockState = LockState.UNLOCKED) }
+
+            firestoreWriteLockState(LockState.UNLOCKED, ActivityType.UNLOCKED)
+
+            _mailboxDetailState.update { it.copy(isLockPending = false) }
 
             doorSimulation = launch { simulateDoor() }
         }
@@ -101,7 +106,10 @@ class MailboxDetailViewModel(
         viewModelScope.launch {
             _mailboxDetailState.update { it.copy(isLockPending = true) }
             delay(500.milliseconds)
-            _mailboxDetailState.update { it.copy(isLockPending = false, lockState = LockState.LOCKED) }
+
+            firestoreWriteLockState(LockState.LOCKED, ActivityType.LOCKED)
+
+            _mailboxDetailState.update { it.copy(isLockPending = false) }
         }
     }
 
@@ -109,8 +117,14 @@ class MailboxDetailViewModel(
     private suspend fun simulateDoor() {
         if (Random.nextFloat() >= OPEN_CHANCE) return // DEMO: nobody opened it
 
-        _mailboxDetailState.update { it.copy(lockState = LockState.OPEN) }
-        delay(RANDOM_OPEN_DELAY_MS.random().milliseconds) //DEMO: door opened for some time
-        _mailboxDetailState.update { it.copy(lockState = LockState.LOCKED) }  // auto-lock back
+        firestoreWriteLockState(LockState.OPEN, ActivityType.DOOR_OPENED)
+        delay(RANDOM_OPEN_DELAY_MS.random().milliseconds)   //DEMO: door opens for random time - simulating a person
+        firestoreWriteLockState(LockState.LOCKED, ActivityType.AUTO_LOCKED)
+    }
+
+    private suspend fun firestoreWriteLockState(lockState: LockState, event: ActivityType) {
+        repository.setLockState(mailboxId, lockState, event)
+            .onSuccess { Log.d("MailboxDetail", "setLockState($lockState) OK") }
+            .onFailure { e -> Log.e("MailboxDetail", "setLockState($lockState) failed", e) }
     }
 }

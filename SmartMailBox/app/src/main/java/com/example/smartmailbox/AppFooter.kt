@@ -2,6 +2,7 @@ package com.example.smartmailbox
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.NavigationBar
@@ -63,6 +64,7 @@ fun AppFooter(
 
     }
     */
+
     NavigationBar(
         containerColor = LightGray,
         contentColor = Black

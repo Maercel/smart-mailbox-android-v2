@@ -2,6 +2,7 @@ package com.example.smartmailbox.home.domain
 
 import androidx.annotation.DrawableRes
 import com.example.smartmailbox.home.data.MailboxDto
+import com.example.smartmailbox.mailboxdetail.domain.LockState
 
 private const val DEMO_BATTERY_PERCENT = 100
 private const val DEMO_IS_CONNECTED = true
@@ -12,6 +13,7 @@ data class Mailbox(
     val batteryPercent: Int,
     val isConnected: Boolean,
     val deviceModel: MailboxDeviceModel,
+    val lockState: LockState,
     @DrawableRes val imageRes: Int
 )
 
@@ -20,15 +22,10 @@ fun MailboxDto.toDomain(): Mailbox {
     return Mailbox(
         id = id,
         name = name,
-        batteryPercent = 100, //TODO: get from device!
+        batteryPercent = DEMO_BATTERY_PERCENT, //TODO: get from device!
         isConnected = DEMO_IS_CONNECTED,
         deviceModel = model,
-        imageRes = MailboxDeviceCatalog.imageFor(model)
+        imageRes = MailboxDeviceCatalog.imageFor(model),
+        lockState = LockState.entries.find { it.name == lockState } ?: LockState.LOCKED
     )
 }
-
-fun Mailbox.toDto(): MailboxDto = MailboxDto(
-    id = id,
-    name = name,
-    deviceModelId = deviceModel.id
-)

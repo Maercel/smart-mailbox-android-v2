@@ -99,8 +99,6 @@ class AddMailboxViewModel(
                 .onSuccess {
                     _addMailboxState.update { it.copy(isLoading = false) }
                     _events.emit(AddMailboxEvent.MailboxAdded)
-
-                    _addMailboxState.value = AddMailboxState()
                 }
                 .onFailure { e ->
                     _addMailboxState.update {

@@ -62,6 +62,11 @@ fun InboxView(
                 text = "Inbox",
                 style = MaterialTheme.typography.headlineMedium
             )
+
+            HorizontalDivider(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                color = Black.copy(alpha = 0.1f)
+            )
         }
 
         Box(
@@ -83,10 +88,6 @@ fun InboxView(
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
-
-                    HorizontalDivider(
-                        color = Black.copy(alpha = 0.7f)
-                    )
                 }
             }
         }
