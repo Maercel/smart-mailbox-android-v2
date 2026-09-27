@@ -1,6 +1,8 @@
 package com.example.smartmailbox.auth.domain
 
 import android.util.Log
+import com.example.smartmailbox.profile.domain.UserProfile
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
@@ -26,6 +28,21 @@ class AuthRepository(
     val currentUserId: String?
         get() = firebaseAuth.currentUser?.uid
 
+    // TODO: Listen to changes here
+    val currentUser: FirebaseUser?
+        get() = firebaseAuth.currentUser
+
+    fun currentUserProfile(): UserProfile? {
+        val user = currentUser ?: return null
+
+        val email = user.email.orEmpty()
+
+        return UserProfile(
+            email = email,
+            hasPassword = user.providerData.any { it.providerId == EmailAuthProvider.PROVIDER_ID },
+        )
+    }
+    // TODO: TILL HERE
 
     val authStateFlow: Flow<Boolean?> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->

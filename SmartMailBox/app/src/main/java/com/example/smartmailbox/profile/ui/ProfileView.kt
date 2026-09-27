@@ -1,189 +1,204 @@
 package com.example.smartmailbox.profile.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.smartmailbox.ui.theme.Alata
-import com.example.smartmailbox.ui.theme.Emerald
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.smartmailbox.R
+import com.example.smartmailbox.ui.components.ScreenHeader
+import com.example.smartmailbox.ui.theme.Black
 import com.example.smartmailbox.ui.theme.ErrorRed
-import com.example.smartmailbox.ui.theme.ForestGreen
-import com.example.smartmailbox.ui.theme.VeryDarkGreen
+import com.example.smartmailbox.ui.theme.LightGray
+import com.example.smartmailbox.ui.theme.White
 
 @Composable
 fun ProfileView(
     profileViewModel: ProfileViewModel,
     paddingValues: PaddingValues,
-    onTwoFactorClick: () -> Unit
+    onBack: () -> Unit,
+    onEditProfileClick: () -> Unit,
+    onChangePasswordClick: () -> Unit,
+    onNotificationSettingsClick: () -> Unit,
 ) {
-    val profileState = profileViewModel.profileState
+    val profileState by profileViewModel.profileState.collectAsStateWithLifecycle()
+    var showSignOutDialog by remember { mutableStateOf(false) }
 
+    // TODO: Remake into Lazy column!
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "User Profile",
-            style = MaterialTheme.typography.headlineLarge
-        )
+        ScreenHeader(title = "Profile", onBack = onBack)
 
-        Spacer(modifier = Modifier.height(24.dp))
+        // To create that nice depth effect
+        HorizontalDivider(color = Black.copy(alpha = 0.1f))
 
-        ProfileInfoRow(
-            label = "Username:",
-            value = profileState.username.ifBlank { "marcel" }
-        )
+        // The list takes all the spaces, which leaves the sign out button to be at the bottom
+        Column(Modifier.weight(1f)) {
+            SettingsSectionHeader("Account")
+            ProfileHeaderRow(email = profileState.email, onClick = onEditProfileClick)
 
-        Spacer(modifier = Modifier.height(12.dp))
+            if (profileState.hasPassword) {
+                HorizontalDivider(Modifier.padding(start = 16.dp),  color = Black.copy(alpha = 0.1f))
 
-        ProfileInfoRow(
-            label = "Email:",
-            value = profileState.email.ifBlank { "marcel@gmail.com" }
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        ProfileInfoRow(
-            label = "2FA:",
-            value = if (profileState.twoFactorEnabled) "Enabled" else "Disabled",
-            valueColor = if (profileState.twoFactorEnabled) Emerald else ErrorRed
-        )
-
-        if (profileState.errorMessage != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = profileState.errorMessage,
-                fontFamily = Alata,
-                fontSize = 14.sp,
-                color = ErrorRed,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-        /*
-        Button(
-            onClick = onTwoFactorClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ForestGreen,
-                contentColor = VeryDarkGreen
-            ),
-            enabled = !profileState.isLoading
-        ) {
-            if (profileState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.height(24.dp),
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text(
-                    text = if (profileState.twoFactorEnabled) "Disable 2FA" else "Enable 2FA",
-                    fontFamily = Alata,
-                    fontWeight = FontWeight.Bold
-                )
+                SettingsRow(title = "Change password", onClick = onChangePasswordClick)
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        */
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ForestGreen,
-                contentColor = VeryDarkGreen
-            )
-        ) {
-            Text(
-                text = "Edit Profile",
-                fontFamily = Alata,
-                fontWeight = FontWeight.Bold
-            )
-        }
+            SettingsSectionHeader("Notifications")
+            SettingsRow(title = "Notification settings", onClick = onNotificationSettingsClick)
 
-        Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(color = Black.copy(alpha = 0.1f), modifier = Modifier.padding(start = 16.dp))
+        }
 
         Button(
-            onClick = { profileViewModel.logout() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+            onClick = { showSignOutDialog = true },
             shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Red,
-                contentColor = Color.White
-            )
+                containerColor = LightGray,
+                contentColor = Black
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .height(56.dp),
+            elevation = ButtonDefaults.buttonElevation(5.dp)
         ) {
-            Text(
-                text = "Logout",
-                fontFamily = Alata,
-                style = MaterialTheme.typography.bodyMedium,
-                color = VeryDarkGreen,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Sign Out")
         }
+    }
+
+    if (showSignOutDialog) {
+        SignOutDialog(
+            onConfirm = {
+                showSignOutDialog = false
+                profileViewModel.logout()
+            },
+            onDismiss = { showSignOutDialog = false }
+        )
     }
 }
 
 @Composable
-private fun ProfileInfoRow(
-    label: String,
-    value: String,
-    valueColor: Color = VeryDarkGreen // default color
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
+private fun SettingsSectionHeader(title: String) {
+    Text(
+        text = title.uppercase(),
+        style = MaterialTheme.typography.labelLarge,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(LightGray)
+            .padding(horizontal = 16.dp, vertical = 20.dp)
+    )
+}
+
+@Composable
+private fun ProfileHeaderRow(email: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 20.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            //painter = painterResource(R.drawable.ic_account_circle),
+            imageVector = Icons.Filled.AccountCircle,
+            contentDescription = "Account circle",
+            tint = Black,
+            modifier = Modifier.size(32.dp)
+        )
+        Spacer(Modifier.width(16.dp))
         Text(
-            text = label,
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 0.dp, bottom = 5.dp)
+            text = email,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.weight(1f)
         )
 
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = valueColor,
+        Icon(
+            painter = painterResource(R.drawable.arrow_forward),
+            contentDescription = "Arrow forward",
+            tint = Black.copy(alpha = 0.5f),
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(5.dp)
-                )
-                .padding(horizontal = 12.dp, vertical = 14.dp)
+                .size(16.dp)
         )
     }
+}
+
+@Composable
+private fun SettingsRow(title: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .heightIn(min = 56.dp)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f)
+        )
+        Icon(
+            painter = painterResource(R.drawable.arrow_forward),
+            contentDescription = "Arrow forward",
+            tint = Black.copy(alpha = 0.5f),
+            modifier = Modifier
+                .size(16.dp)
+        )
+    }
+}
+
+@Composable
+private fun SignOutDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        shape = RoundedCornerShape(5.dp),
+        onDismissRequest = onDismiss,
+        title = { Text("Sign out?", fontWeight = FontWeight.Bold) },
+        text = { Text("Are you sure you want to sign out?") },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Sign out", color = Black, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = Black, fontWeight = FontWeight.Normal)
+            }
+        }
+    )
 }

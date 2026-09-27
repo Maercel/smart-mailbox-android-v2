@@ -55,7 +55,7 @@ fun App() {
     val addMailboxViewModel: AddMailboxViewModel = viewModel()
     val logModel: LogViewModel = viewModel()
     val loginModel: LoginViewModel = viewModel()
-    val profileViewModel: ProfileViewModel = viewModel()
+    //val profileViewModel: ProfileViewModel = viewModel() //TODO: Moved to composable, do the same with others, then delete this comment
     val faceVerifyViewModel: FaceVerifyViewModel = viewModel()
     val registerViewModel: RegisterViewModel = viewModel()
     val appViewModel: AppViewModel = viewModel()
@@ -151,12 +151,15 @@ fun App() {
                     )
                 }
                 composable(NavigationScreen.Profile.route) {
+                    val profileViewModel: ProfileViewModel = viewModel()
+
                     ProfileView(
                         profileViewModel = profileViewModel,
                         paddingValues = paddingValues,
-                        onTwoFactorClick = {
-                            // later navigate to Enable2FA screen
-                        }
+                        onBack = { navController.popBackStack() },
+                        onEditProfileClick = { },            // TODO: edit profile screen
+                        onChangePasswordClick = { },         // TODO: change password screen
+                        onNotificationSettingsClick = { },   // TODO: notification settings screen
                     )
                 }
                 composable(NavigationScreen.FaceVerify.route) {

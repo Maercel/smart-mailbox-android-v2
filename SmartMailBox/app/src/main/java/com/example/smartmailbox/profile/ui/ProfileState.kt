@@ -1,9 +1,10 @@
 package com.example.smartmailbox.profile.ui
 
 data class ProfileState(
-    val username: String = "",
+    val name: String = "",
     val email: String = "",
-    val twoFactorEnabled: Boolean = false,
+    // Google sign-in accounts don't have password
+    val hasPassword: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
