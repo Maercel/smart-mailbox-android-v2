@@ -356,8 +356,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_account_circle" />
-                            <entry key="sourceFile" value="C:\Users\Marcel\Downloads\account_circle_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
+                            <entry key="outputName" value="ic_mailbox_door" />
+                            <entry key="sourceFile" value="C:\Users\Marcel\Downloads\sensor_door_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
                           </map>
                         </option>
                       </PersistentState>

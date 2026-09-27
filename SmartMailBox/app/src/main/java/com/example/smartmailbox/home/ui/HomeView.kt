@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,8 +25,7 @@ import com.example.smartmailbox.home.domain.Mailbox
 import com.example.smartmailbox.home.domain.MailboxDeviceCatalog
 import com.example.smartmailbox.home.domain.MailboxDeviceModel
 import com.example.smartmailbox.home.ui.components.AddNewMailboxButton
-
-
+import com.example.smartmailbox.ui.theme.Black
 
 
 @Composable

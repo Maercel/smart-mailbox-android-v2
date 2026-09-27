@@ -1,5 +1,7 @@
 package com.example.smartmailbox
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -36,10 +38,13 @@ import com.example.smartmailbox.profile.ui.ProfileViewModel
 import com.example.smartmailbox.auth.ui.register.RegisterViewModel
 import com.example.smartmailbox.inbox.ui.InboxView
 import com.example.smartmailbox.mailbox.ui.UnlockMailboxScreen
+import com.example.smartmailbox.mailboxactivity.ui.MailboxActivityView
+import com.example.smartmailbox.mailboxactivity.ui.MailboxActivityViewModel
 import com.example.smartmailbox.mailboxdetail.ui.MailboxDetailView
 import com.example.smartmailbox.mailboxdetail.ui.MailboxDetailViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun App() {
     /* doesn't survive recomposition (screen rotation)
@@ -52,7 +57,6 @@ fun App() {
 
     val homeViewModel: HomeViewModel = viewModel()
     val mailBoxViewModel: MailBoxViewModel = viewModel()
-    val addMailboxViewModel: AddMailboxViewModel = viewModel()
     val logModel: LogViewModel = viewModel()
     val loginModel: LoginViewModel = viewModel()
     //val profileViewModel: ProfileViewModel = viewModel() //TODO: Moved to composable, do the same with others, then delete this comment
@@ -222,6 +226,8 @@ fun App() {
                     )
                 }
                 composable(NavigationScreen.AddMailbox.route) {
+                    val addMailboxViewModel: AddMailboxViewModel = viewModel()
+
                     AddMailboxView(
                         addMailboxViewModel,
                         paddingValues,
@@ -247,7 +253,11 @@ fun App() {
                         // Handles address shaped like this: mailbox_detail/{something(mailboxId)}
                         navArgument(NavigationScreen.MailboxDetail.ARG_MAILBOX_ID) { type = NavType.StringType }
                     )
-                ) {
+                ) { backStackEntry ->
+                    val mailboxId = backStackEntry.arguments
+                        ?.getString(NavigationScreen.MailboxDetail.ARG_MAILBOX_ID)
+                        ?: return@composable
+
                     // viewModel attaches to the nearest owner (in this case here), so in activity (where I had it before, top of the app)
                     // it lives until the app closes.
                     // one instance per opened mailbox
@@ -258,11 +268,30 @@ fun App() {
                         paddingValues = paddingValues,
                         onBack = { navController.popBackStack() },
                         onSettingsClick = { },
-                        onActivityClick = { },
+                        onActivityClick = {
+                            navController.navigate(NavigationScreen.MailboxActivity.createRoute(mailboxId))
+                        },
                         onAccessClick = { },
                         onHelpClick = { },
-                        onUnlockClick = { },
+                        onUnlockClick = { mailboxDetailViewModel.onLockButtonClick() },
                         onLockdownClick = { }
+                    )
+                }
+
+                composable(
+                    route = NavigationScreen.MailboxActivity.route,
+                    arguments = listOf(
+                        navArgument(NavigationScreen.MailboxActivity.ARG_MAILBOX_ID) { type = NavType.StringType }
+                    )
+                ) {
+                    val mailboxActivityViewModel: MailboxActivityViewModel = viewModel()
+
+                    MailboxActivityView(
+                        mailboxActivityViewModel = mailboxActivityViewModel,
+                        paddingValues = paddingValues,
+                        onBack = {
+                            navController.popBackStack()
+                        }
                     )
                 }
 

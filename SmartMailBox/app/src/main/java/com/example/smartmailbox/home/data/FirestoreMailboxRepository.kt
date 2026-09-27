@@ -1,20 +1,33 @@
 package com.example.smartmailbox.home.data
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.smartmailbox.addmailbox.data.DeviceAlreadyClaimedException
 import com.example.smartmailbox.addmailbox.data.DeviceDto
 import com.example.smartmailbox.addmailbox.data.DeviceNotFoundException
 import com.example.smartmailbox.auth.domain.AuthRepository
+import com.example.smartmailbox.mailboxdetail.data.ActivityDto
+import com.example.smartmailbox.mailboxdetail.domain.ActivityEvent
+import com.example.smartmailbox.mailboxdetail.domain.ActivityType
+import com.example.smartmailbox.mailboxdetail.domain.LockState
+import com.example.smartmailbox.mailboxdetail.domain.toDomain
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
+
+private const val ACTIVITY_LIMIT = 50L
 
 class FirestoreMailboxRepository(
     private val firestore: FirebaseFirestore,
@@ -24,6 +37,7 @@ class FirestoreMailboxRepository(
     private val devicesCollection = firestore.collection("devices")
 
     private val authRepository = AuthRepository(firebaseAuth, firestore)
+
 
     override fun observeMailbox(id: String): Flow<MailboxDto?> = callbackFlow {
         val registration = mailboxesCollection.document(id)
@@ -61,6 +75,65 @@ class FirestoreMailboxRepository(
         awaitClose { registration.remove() }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun observeActivity(mailboxId: String): Flow<List<ActivityEvent>> =
+        authRepository.currentUserIdFlow.flatMapLatest { uid ->
+            if (uid == null) emptyFlow() else activityOf(mailboxId) // flowOf(emptyList)
+        }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun activityOf(mailboxId: String): Flow<List<ActivityEvent>> = callbackFlow {
+        val registration = mailboxesCollection.document(mailboxId)
+            .collection("activity")
+            .orderBy("at", Query.Direction.DESCENDING) // newest first
+            .limit(ACTIVITY_LIMIT)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val events = snapshot?.documents.orEmpty().mapNotNull { document ->
+                    document.toObject(ActivityDto::class.java, DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)
+                        ?.toDomain()
+                }
+                trySend(events)
+            }
+        awaitClose { registration.remove() }
+    }
+
+
+    override suspend fun setLockState(
+        mailboxId: String,
+        lockState: LockState,
+        event: ActivityType,
+    ): Result<Unit> = runCatching {
+        val mailboxRef = mailboxesCollection.document(mailboxId)
+        val activityRef = mailboxRef.collection("activity").document()
+        val byEmail = if (event.isUserAction) authRepository.currentUserProfile()?.email else null
+
+        // Group of writes sent together, all succeed or none
+        firestore.batch()
+            .update(
+                mailboxRef,
+                mapOf(
+                    "lockState" to lockState.name,
+                    "lockStateUpdatedAt" to FieldValue.serverTimestamp(),
+                )
+            )
+            .set(
+                activityRef,
+                mapOf(
+                    "type" to event.name,
+                    "byEmail" to byEmail,
+                    "at" to FieldValue.serverTimestamp(),
+                )
+            )
+            .commit()
+            .await()
+
+        Unit
+    }
 
     override suspend fun addMailbox(name: String, deviceVerificationCode: String): Result<Unit> = runCatching {
         val uid = authRepository.currentUserId
@@ -90,7 +163,7 @@ class FirestoreMailboxRepository(
                     "ownerId" to uid,
                     "name" to name,
                     "deviceModelId" to device.deviceModelId,
-                    "deviceCode" to deviceVerificationCode,
+                    "deviceVerificationCode" to deviceVerificationCode,
                 )
             )
         }.await()
