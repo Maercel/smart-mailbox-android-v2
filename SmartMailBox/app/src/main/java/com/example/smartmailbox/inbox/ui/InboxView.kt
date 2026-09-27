@@ -33,6 +33,10 @@ fun InboxView(
     paddingValues: PaddingValues,
     onBackButton: () -> Unit
 ) {
+
+    // Placeholder
+    val notifications = emptyList<String>()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,26 +73,23 @@ fun InboxView(
             )
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(vertical = 12.dp)
+        if (notifications.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
-                item {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "No notifications",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Black.copy(alpha = 0.7f),
-                        textAlign = TextAlign.Center
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
+                Text(
+                    text = "No notifications",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            }
+        } else {
+            LazyColumn(Modifier.fillMaxSize()) {
+                // item { ... }
             }
         }
     }

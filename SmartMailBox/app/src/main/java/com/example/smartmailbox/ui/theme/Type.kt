@@ -47,6 +47,13 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = .5.sp
     ),
+    titleSmall = TextStyle(
+        fontFamily = Alata,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = .1.sp
+    ),
     headlineLarge = TextStyle(
         fontFamily = Alata,
         fontWeight = FontWeight.ExtraBold,

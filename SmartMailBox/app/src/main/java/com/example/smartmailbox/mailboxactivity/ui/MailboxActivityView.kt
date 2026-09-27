@@ -54,7 +54,10 @@ fun MailboxActivityView(
 
         when {
             activityState.isLoading -> CenteredBox {
-                CircularProgressIndicator(color = LightGray)
+                CircularProgressIndicator(
+                    modifier = Modifier.size(56.dp),
+                    color = LightGray,
+                    strokeWidth = 5.dp)
             }
 
             activityState.errorMessage != null -> CenteredBox {
