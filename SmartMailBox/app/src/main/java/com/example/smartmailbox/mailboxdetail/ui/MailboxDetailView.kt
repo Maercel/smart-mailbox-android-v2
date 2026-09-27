@@ -42,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion.Fit
@@ -50,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.smartmailbox.R
+import com.example.smartmailbox.mailboxdetail.domain.LockState
 import com.example.smartmailbox.ui.components.ScreenHeader
 import com.example.smartmailbox.ui.theme.Black
 import com.example.smartmailbox.ui.theme.ErrorRed
@@ -139,7 +141,7 @@ fun MailboxDetailView(
                         painter = painterResource(mailboxViewModelState.imageRes),
                         contentDescription = mailboxViewModelState.name,
                         modifier = Modifier
-                            .fillMaxSize(0.6f)
+                            .fillMaxSize(0.5f)
                             .aspectRatio(1f),
                         contentScale = Fit
                     )
@@ -158,10 +160,35 @@ fun MailboxDetailView(
                     )
 
                     Spacer(Modifier.height(24.dp))
+
+                    if (mailboxViewModelState.lockState == LockState.OPEN) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_mailbox_door),
+                                contentDescription = null,  // null, otherwise accessibility service announces "Mailbox door", I think
+                                tint = Black,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = "Door open. Locks automatically when closed",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+                    }
+
                     UnlockButton(
-                        isLoading = mailboxViewModelState.isUnlocking,
-                        enabled = mailboxViewModelState.isConnected,
-                        onClick = {  }
+                        isLocked = mailboxViewModelState.lockState == LockState.LOCKED,
+                        isLoading = mailboxViewModelState.isLockPending,
+                        enabled = mailboxViewModelState.isConnected &&
+                            mailboxViewModelState.lockState != LockState.OPEN,
+                        onClick = mailboxDetailViewModel::onLockButtonClick
                     )
 
 
@@ -203,39 +230,48 @@ private data class DetailTile(
 )
 
 @Composable
-private fun UnlockButton(isLoading: Boolean, enabled: Boolean, onClick: () -> Unit) {
+private fun UnlockButton(
+    isLocked: Boolean,
+    isLoading: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    val containerColor = if (isLocked)
+        Black.copy(alpha = 0.8f).compositeOver(White)
+    else LightGray
+
+    val contentColor = if (isLocked) White else Black
+
     Button(
         onClick = onClick,
         enabled = enabled && !isLoading,
         shape = RoundedCornerShape(5.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = LightGray,
-            contentColor = Black,
-            disabledContainerColor = LightGray,
-            disabledContentColor = Black.copy(alpha = 0.4f),
+            containerColor = containerColor,
+            contentColor = contentColor,
+            disabledContainerColor = containerColor,
+            disabledContentColor = contentColor.copy(alpha = 0.4f),
         ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp)
+            .height(64.dp)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                color = White,
+                color = contentColor, // important! without that we wouldn't see it switching between one of the colors
                 strokeWidth = 2.dp,
                 modifier = Modifier.size(24.dp)
             )
         } else {
             Icon(
-                painter = painterResource(R.drawable.locked),
-                contentDescription = "Unlock",
-                tint = Black,
+                painter = painterResource(if (isLocked) R.drawable.locked else R.drawable.ic_unlocked_right),
+                contentDescription = if (isLocked) "Unlock mailbox" else "Lock mailbox",
                 modifier = Modifier.size(28.dp)
             )
         }
     }
 }
-
 @Composable
 private fun DetailTileGrid(tiles: List<DetailTile>) {
     Column(

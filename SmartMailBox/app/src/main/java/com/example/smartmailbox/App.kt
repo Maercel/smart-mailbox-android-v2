@@ -261,7 +261,7 @@ fun App() {
                         onActivityClick = { },
                         onAccessClick = { },
                         onHelpClick = { },
-                        onUnlockClick = { },
+                        onUnlockClick = { mailboxDetailViewModel.onLockButtonClick() },
                         onLockdownClick = { }
                     )
                 }
