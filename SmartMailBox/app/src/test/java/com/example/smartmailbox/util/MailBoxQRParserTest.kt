@@ -31,7 +31,7 @@ class MailBoxQrParserTest {
         MailBoxQRParser.extractMailBoxId(url)
     }
 
-    @Test(expected = NumberFormatException::class)
+    @Test(expected = IllegalArgumentException::class)
     fun extractMailBoxId_throwsExceptionWhenIdIsNotNumber() {
         val url = "https://b.direct4.me/00/not-a-number/600"
 
