@@ -112,6 +112,7 @@ private fun ActivityRow(event: ActivityEvent) {
             Text(
                 text = event.subtitle(),
                 style = MaterialTheme.typography.bodySmall,
+                // alpha = 0.7f
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

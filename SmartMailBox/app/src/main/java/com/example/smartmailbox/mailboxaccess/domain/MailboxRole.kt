@@ -1,6 +1,4 @@
-package com.example.smartmailbox.access.domain
-
-import com.example.smartmailbox.access.domain.MailboxPermission
+package com.example.smartmailbox.mailboxaccess.domain
 
 enum class MailboxRole(val permissions: Set<MailboxPermission>) {
     OWNER(MailboxPermission.entries.toSet()),
