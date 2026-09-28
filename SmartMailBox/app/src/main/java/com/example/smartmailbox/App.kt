@@ -147,13 +147,13 @@ fun App() {
                 composable(NavigationScreen.Login.route) {
                     LoginView(
                         loginViewModel = loginModel,
+                        paddingValues = paddingValues,
                         onTwoFactorRequired = {
                             navController.navigate(NavigationScreen.FaceVerify.route)
                         },
-                        onRegisterClick = {
-                            navController.navigate(NavigationScreen.Register.route)
-                        }
-                    )
+                    ) {
+                        navController.navigate(NavigationScreen.Register.route)
+                    }
                 }
                 composable(NavigationScreen.Profile.route) {
                     val profileViewModel: ProfileViewModel = viewModel()
