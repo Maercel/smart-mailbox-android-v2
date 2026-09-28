@@ -187,7 +187,7 @@ fun RegisterView(
                     )
                 } else {
                     Text(
-                        text = "Register"
+                        text = "Create account"
                     )
                 }
             }
@@ -251,7 +251,7 @@ fun RegisterView(
                             .align(Alignment.CenterStart)
                     )
 
-                    Text("Register with Google")
+                    Text("Continue with Google")
                 }
             }
 

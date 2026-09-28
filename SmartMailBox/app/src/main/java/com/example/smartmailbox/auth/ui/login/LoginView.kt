@@ -233,7 +233,7 @@ fun LoginView(
                             .align(Alignment.CenterStart)
                     )
 
-                    Text("Login with Google")
+                    Text("Continue with Google")
                 }
             }
 
@@ -242,7 +242,7 @@ fun LoginView(
                 enabled = !loginState.isLoading,
             ) {
                 Text(
-                    text = "Don't have an account? Register.",
+                    text = "Don't have an account? Create one.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
