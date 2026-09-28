@@ -84,7 +84,7 @@ fun LoginView(
             contentDescription = "Smart Mailbox logo",
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 32.dp)
+                .padding(top = 24.dp)
                 .fillMaxWidth(0.8f),
             contentScale = ContentScale.Fit
         )
@@ -219,7 +219,7 @@ fun LoginView(
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(5.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp)
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
             ) {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
@@ -242,7 +242,7 @@ fun LoginView(
                 enabled = !loginState.isLoading,
             ) {
                 Text(
-                    text = "Don't have an account? Register",
+                    text = "Don't have an account? Register.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
