@@ -104,7 +104,7 @@ fun LoginView(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "Log in to your mailboxes.",
+                text = "Log in to SmartMailbox app.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
