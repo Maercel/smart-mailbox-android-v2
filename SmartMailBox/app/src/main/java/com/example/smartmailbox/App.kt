@@ -272,9 +272,7 @@ fun App() {
                             navController.navigate(NavigationScreen.MailboxActivity.createRoute(mailboxId))
                         },
                         onAccessClick = { },
-                        onHelpClick = { },
-                        onUnlockClick = { mailboxDetailViewModel.onLockButtonClick() },
-                        onLockdownClick = { }
+                        onHelpClick = { }
                     )
                 }
 

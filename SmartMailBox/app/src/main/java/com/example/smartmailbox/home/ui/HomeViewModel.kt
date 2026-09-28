@@ -34,30 +34,8 @@ class HomeViewModel() : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val demoModel = MailboxDeviceModel.MEDIUM_V2
-    private val mailboxDemo =
-        Mailbox(
-            id = "1",
-            name = "Demo Mailbox",
-            batteryPercent = 87,
-            isConnected = true,
-            deviceModel = demoModel,
-            imageRes = MailboxDeviceCatalog.imageFor(demoModel),
-            lockState = LockState.LOCKED
-        )
-
-
-
     init {
         observeMailboxes()
-    }
-
-    private fun demoData() {
-        _uiState.update {
-            HomeUiState.Success(
-                    mailboxes = listOf(mailboxDemo)
-            )
-        }
     }
 
     private fun observeMailboxes() {

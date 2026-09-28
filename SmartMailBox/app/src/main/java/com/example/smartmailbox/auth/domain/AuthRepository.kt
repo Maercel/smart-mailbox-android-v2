@@ -28,7 +28,7 @@ class AuthRepository(
     val currentUserId: String?
         get() = firebaseAuth.currentUser?.uid
 
-    // TODO: Listen to changes here
+    // TODO: Listen to changes here?
     val currentUser: FirebaseUser?
         get() = firebaseAuth.currentUser
 

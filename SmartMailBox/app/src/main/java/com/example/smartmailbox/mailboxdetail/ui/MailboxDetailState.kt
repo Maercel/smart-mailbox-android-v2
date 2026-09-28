@@ -12,6 +12,8 @@ data class MailboxDetailState(
     // Meaning: waiting for answer from server
     val isLockPending: Boolean = false,
     val isLockdown: Boolean = false,
+    // Meaning: waiting for answer from server
+    val isLockdownPending: Boolean = false,
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
 )

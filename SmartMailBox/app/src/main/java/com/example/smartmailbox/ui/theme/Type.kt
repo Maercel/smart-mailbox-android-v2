@@ -79,7 +79,6 @@ val Typography = Typography(
     ),
     // default for text inside button
     labelLarge = TextStyle(
-        color = Black,
         fontFamily = Alata,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,

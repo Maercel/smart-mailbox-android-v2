@@ -1,11 +1,8 @@
 package com.example.smartmailbox.mailboxdetail.ui
 
-import android.graphics.Color
-import android.hardware.lights.Light
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,15 +13,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -34,10 +28,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,19 +36,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion.Fit
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.smartmailbox.R
 import com.example.smartmailbox.mailboxdetail.domain.LockState
 import com.example.smartmailbox.ui.components.ScreenHeader
 import com.example.smartmailbox.ui.theme.Black
-import com.example.smartmailbox.ui.theme.ErrorRed
 import com.example.smartmailbox.ui.theme.LightGray
 import com.example.smartmailbox.ui.theme.White
+import androidx.compose.ui.graphics.Color
+import com.example.smartmailbox.ui.theme.DarkGray
 
 //TODO: NEEDS REMODEL!
 @Composable
@@ -68,21 +58,17 @@ fun MailboxDetailView(
     onSettingsClick: () -> Unit,
     onActivityClick: () -> Unit,
     onAccessClick: () -> Unit,
-    onHelpClick: () -> Unit,
-    onUnlockClick: () -> Unit,
-    onLockdownClick: () -> Unit,
+    onHelpClick: () -> Unit
 ) {
     val mailboxViewModelState by mailboxDetailViewModel.mailboxDetailState.collectAsStateWithLifecycle()
 
     val tiles = listOf(
         DetailTile("Activity", R.drawable.ic_history, onActivityClick),
         DetailTile("Access", R.drawable.ic_key, onAccessClick),
-        DetailTile(
-            label = "Lockdown",
-            iconRes = R.drawable.locked,
-            onClick = { },                                              // TODO: lockdown dialog
-        ),
-        DetailTile("Help", R.drawable.ic_product_support, onHelpClick),
+
+        lockdownTile(mailboxViewModelState, mailboxDetailViewModel::onLockdownButtonClick),
+
+        DetailTile("Help", R.drawable.ic_product_support, onHelpClick)
     )
 
     Column(
@@ -191,8 +177,9 @@ fun MailboxDetailView(
                     UnlockButton(
                         isLocked = mailboxViewModelState.lockState == LockState.LOCKED,
                         isLoading = mailboxViewModelState.isLockPending,
+                        inLockdown = mailboxViewModelState.isLockdown,
                         enabled = mailboxViewModelState.isConnected &&
-                            mailboxViewModelState.lockState != LockState.OPEN,
+                            mailboxViewModelState.lockState != LockState.OPEN && !mailboxViewModelState.isLockdownPending,
                         onClick = mailboxDetailViewModel::onLockButtonClick
                     )
 
@@ -232,12 +219,27 @@ private data class DetailTile(
     val label: String,
     @DrawableRes val iconRes: Int,
     val onClick: () -> Unit,
+    val enabled: Boolean = true,
+    val isLoading: Boolean = false,
+    val containerColor: Color = LightGray,
+    val contentColor: Color = Black,
+)
+
+private fun lockdownTile(mailboxState: MailboxDetailState, onClick: () -> Unit) = DetailTile(
+    label = "Lockdown",
+    iconRes = R.drawable.locked,
+    onClick = onClick,
+    enabled = mailboxState.isConnected && mailboxState.lockState != LockState.OPEN && !mailboxState.isLockPending,
+    isLoading = mailboxState.isLockdownPending,
+    containerColor = if (mailboxState.isLockdown) DarkGray else LightGray,
+    contentColor = if (mailboxState.isLockdown) White else Black,
 )
 
 @Composable
 private fun UnlockButton(
     isLocked: Boolean,
     isLoading: Boolean,
+    inLockdown: Boolean,
     enabled: Boolean,
     onClick: () -> Unit,
 ) {
@@ -249,7 +251,7 @@ private fun UnlockButton(
 
     Button(
         onClick = onClick,
-        enabled = enabled && !isLoading,
+        enabled = enabled && !isLoading && !inLockdown,
         shape = RoundedCornerShape(5.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
@@ -301,14 +303,16 @@ private fun DetailTileGrid(tiles: List<DetailTile>) {
 private fun DetailTileCard(tile: DetailTile, modifier: Modifier = Modifier) {
     Card(
         onClick = tile.onClick,
+        enabled = tile.enabled && !tile.isLoading,
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = LightGray,
-            contentColor = Black
+            containerColor = tile.containerColor,
+            contentColor = tile.contentColor,
+            disabledContainerColor = tile.containerColor,
+            disabledContentColor = tile.contentColor.copy(alpha = 0.4f),
         ),
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
@@ -317,18 +321,31 @@ private fun DetailTileCard(tile: DetailTile, modifier: Modifier = Modifier) {
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                painter = painterResource(tile.iconRes),
-                contentDescription = null,
-                tint = Black,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(Modifier.width(12.dp))
-            Text(
-                text = tile.label,
-                style = MaterialTheme.typography.labelLarge,
-                maxLines = 2
-            )
+            if (tile.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = tile.contentColor,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            } else {
+                Icon(
+                    painter = painterResource(tile.iconRes),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = tile.label,
+                    style = MaterialTheme.typography.labelLarge,
+                    maxLines = 2
+                )
+            }
         }
     }
 }

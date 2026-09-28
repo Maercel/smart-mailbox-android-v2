@@ -94,7 +94,10 @@ class FirestoreMailboxRepository(
                     return@addSnapshotListener
                 }
                 val events = snapshot?.documents.orEmpty().mapNotNull { document ->
-                    document.toObject(ActivityDto::class.java, DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)
+                    document.toObject(
+                        ActivityDto::class.java,
+                        // server needs time to write, which requires some time. We add estimate which is phone's current time.
+                        DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)
                         ?.toDomain()
                 }
                 trySend(events)
@@ -118,7 +121,7 @@ class FirestoreMailboxRepository(
                 mailboxRef,
                 mapOf(
                     "lockState" to lockState.name,
-                    "lockStateUpdatedAt" to FieldValue.serverTimestamp(),
+                    "lockStateUpdatedAt" to FieldValue.serverTimestamp(), // add to mailboxdto
                 )
             )
             .set(
@@ -134,6 +137,34 @@ class FirestoreMailboxRepository(
 
         Unit
     }
+
+    override suspend fun setLockdownState(mailboxId: String, enabled: Boolean): Result<Unit> = runCatching {
+        val mailboxRef = mailboxesCollection.document(mailboxId)
+        val activityRef = mailboxRef.collection("activity").document()
+        val event = if (enabled) ActivityType.LOCKDOWN_ON else ActivityType.LOCKDOWN_OFF
+
+        firestore.batch()
+            .update(
+                mailboxRef,
+                mapOf(
+                    "lockdown" to enabled
+                )
+            )
+            .set(
+                activityRef,
+                mapOf(
+                    "type" to event.name,
+                    "byEmail" to authRepository.currentUserProfile()?.email,
+                    "at" to FieldValue.serverTimestamp(),
+                )
+            )
+
+            .commit()
+            .await()
+
+        Unit
+    }
+
 
     override suspend fun addMailbox(name: String, deviceVerificationCode: String): Result<Unit> = runCatching {
         val uid = authRepository.currentUserId

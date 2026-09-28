@@ -1,6 +1,7 @@
 package com.example.smartmailbox.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
@@ -28,3 +29,4 @@ val ErrorRed = Color(0xFFFF3333)
 val White = Color(0xFFFFFFFF) // Main background
 val LightGray = Color(0xFFF3F3F3) // Surface/Cards
 val Black = Color(0xFF000000)
+val DarkGray = Black.copy(alpha = 0.8f).compositeOver(White)
