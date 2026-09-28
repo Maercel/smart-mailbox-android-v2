@@ -12,6 +12,7 @@ interface MailboxRepository {
     fun observeMailbox(id: String): Flow<MailboxDto?>
     fun observeActivity(mailboxId: String): Flow<List<ActivityEvent>>
     suspend fun setLockState(mailboxId: String, lockState: LockState, event: ActivityType): Result<Unit>
+    suspend fun setLockdownState(mailboxId: String, enabled: Boolean): Result<Unit>
     suspend fun addMailbox(name: String, deviceVerificationCode: String): Result<Unit>
     suspend fun updateMailbox(dto: MailboxDto): Result<Unit>
     suspend fun deleteMailbox(id: String): Result<Unit>

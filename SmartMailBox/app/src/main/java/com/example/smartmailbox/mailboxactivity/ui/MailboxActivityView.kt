@@ -112,6 +112,7 @@ private fun ActivityRow(event: ActivityEvent) {
             Text(
                 text = event.subtitle(),
                 style = MaterialTheme.typography.bodySmall,
+                // alpha = 0.7f
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -130,13 +131,13 @@ private fun CenteredBox(content: @Composable () -> Unit) {
     }
 }
 
-// --- How each event type looks (UI decisions, so they live here, not in the domain) ---
-
 private fun ActivityType.label(): String = when (this) {
     ActivityType.UNLOCKED -> "Unlocked"
     ActivityType.LOCKED -> "Locked"
     ActivityType.DOOR_OPENED -> "Door opened"
     ActivityType.AUTO_LOCKED -> "Locked automatically"
+    ActivityType.LOCKDOWN_ON -> "Lockdown on"
+    ActivityType.LOCKDOWN_OFF -> "Lockdown off"
 }
 
 @DrawableRes
@@ -145,6 +146,8 @@ private fun ActivityType.iconRes(): Int = when (this) {
     ActivityType.LOCKED -> R.drawable.locked
     ActivityType.DOOR_OPENED -> R.drawable.ic_mailbox_door
     ActivityType.AUTO_LOCKED -> R.drawable.locked
+    ActivityType.LOCKDOWN_ON -> R.drawable.locked
+    ActivityType.LOCKDOWN_OFF -> R.drawable.locked
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

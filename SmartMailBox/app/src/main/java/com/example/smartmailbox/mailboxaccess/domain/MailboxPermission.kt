@@ -1,4 +1,4 @@
-package com.example.smartmailbox.access.domain
+package com.example.smartmailbox.mailboxaccess.domain
 
 enum class MailboxPermission {
     UNLOCK,

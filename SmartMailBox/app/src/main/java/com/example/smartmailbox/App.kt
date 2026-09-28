@@ -17,31 +17,33 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.smartmailbox.activity.ui.ActivityView
 import com.example.smartmailbox.addmailbox.ui.AddMailboxView
 import com.example.smartmailbox.addmailbox.ui.AddMailboxViewModel
-import com.example.smartmailbox.addmailbox.ui.DeviceVerificationView
 import com.example.smartmailbox.navigation.ui.NavigationScreen
 import com.example.smartmailbox.ui.theme.SmartMailBoxTheme
 import com.example.smartmailbox.auth.ui.faceverify.FaceVerifyView
 import com.example.smartmailbox.home.ui.HomeView
-import com.example.smartmailbox.log.ui.LogView
 import com.example.smartmailbox.auth.ui.login.LoginView
 import com.example.smartmailbox.mailbox.ui.MailBoxView
 import com.example.smartmailbox.profile.ui.ProfileView
 import com.example.smartmailbox.auth.ui.register.RegisterView
 import com.example.smartmailbox.auth.ui.faceverify.FaceVerifyViewModel
 import com.example.smartmailbox.home.ui.HomeViewModel
-import com.example.smartmailbox.log.ui.LogViewModel
+import com.example.smartmailbox.activity.ui.ActivityViewModel
 import com.example.smartmailbox.auth.ui.login.LoginViewModel
 import com.example.smartmailbox.mailbox.ui.MailBoxViewModel
 import com.example.smartmailbox.profile.ui.ProfileViewModel
 import com.example.smartmailbox.auth.ui.register.RegisterViewModel
 import com.example.smartmailbox.inbox.ui.InboxView
 import com.example.smartmailbox.mailbox.ui.UnlockMailboxScreen
+import com.example.smartmailbox.mailboxaccess.ui.MailboxAccessView
 import com.example.smartmailbox.mailboxactivity.ui.MailboxActivityView
 import com.example.smartmailbox.mailboxactivity.ui.MailboxActivityViewModel
 import com.example.smartmailbox.mailboxdetail.ui.MailboxDetailView
 import com.example.smartmailbox.mailboxdetail.ui.MailboxDetailViewModel
+import com.example.smartmailbox.mailboxhelp.ui.MailboxHelpView
+import com.example.smartmailbox.mailboxsettings.ui.MailboxSettingsView
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -57,7 +59,6 @@ fun App() {
 
     val homeViewModel: HomeViewModel = viewModel()
     val mailBoxViewModel: MailBoxViewModel = viewModel()
-    val logModel: LogViewModel = viewModel()
     val loginModel: LoginViewModel = viewModel()
     //val profileViewModel: ProfileViewModel = viewModel() //TODO: Moved to composable, do the same with others, then delete this comment
     val faceVerifyViewModel: FaceVerifyViewModel = viewModel()
@@ -267,14 +268,46 @@ fun App() {
                         mailboxDetailViewModel = mailboxDetailViewModel,
                         paddingValues = paddingValues,
                         onBack = { navController.popBackStack() },
-                        onSettingsClick = { },
+                        onSettingsClick = {
+                            navController.navigate(NavigationScreen.MailboxSettings.createRoute(mailboxId))
+                        },
                         onActivityClick = {
                             navController.navigate(NavigationScreen.MailboxActivity.createRoute(mailboxId))
                         },
-                        onAccessClick = { },
-                        onHelpClick = { },
-                        onUnlockClick = { mailboxDetailViewModel.onLockButtonClick() },
-                        onLockdownClick = { }
+                        onAccessClick = {
+                            navController.navigate(NavigationScreen.MailboxAccess.createRoute(mailboxId))
+                        },
+                        onHelpClick = {
+                            navController.navigate(NavigationScreen.MailboxHelp.createRoute(mailboxId))
+                        }
+                    )
+                }
+
+                composable(
+                    route = NavigationScreen.MailboxAccess.route,
+                    arguments = listOf(navArgument(NavigationScreen.MailboxAccess.ARG_MAILBOX_ID) { type = NavType.StringType })
+                ) {
+                    MailboxAccessView(
+                        paddingValues = paddingValues,
+                        onBack = { navController.popBackStack() })
+                }
+
+                composable(
+                    route = NavigationScreen.MailboxSettings.route,
+                    arguments = listOf(navArgument(NavigationScreen.MailboxSettings.ARG_MAILBOX_ID) { type = NavType.StringType })
+                ) {
+                    MailboxSettingsView(
+                        paddingValues = paddingValues,
+                        onBack = { navController.popBackStack() })
+                }
+
+                composable(
+                    route = NavigationScreen.MailboxHelp.route,
+                    arguments = listOf(navArgument(NavigationScreen.MailboxHelp.ARG_MAILBOX_ID) { type = NavType.StringType })
+                ) {
+                    MailboxHelpView(
+                        paddingValues = paddingValues,
+                        onBack = { navController.popBackStack() }
                     )
                 }
 
@@ -295,29 +328,16 @@ fun App() {
                     )
                 }
 
-                composable(NavigationScreen.Log.route) { LogView(logModel, paddingValues) }
-            }
-            // MailBoxView(mailBoxViewModel, paddingValues)
-            // HomeView(paddingValues = paddingValues)
-            // LogView(paddingValues = paddingValues)
-        }
-    }
+                composable(NavigationScreen.Activity.route)
+                {
+                    val activityViewModel: ActivityViewModel = viewModel()
 
-    fun navigateToHomeAndClearBackStack() {
-        navController.navigate(NavigationScreen.Home.route) {
-            popUpTo(navController.graph.startDestinationId) {
-                inclusive = true
+                    ActivityView(
+                        activityViewModel,
+                        paddingValues
+                    )
+                }
             }
-            launchSingleTop = true
-        }
-    }
-
-    fun navigateToLoginAndClearBackStack() {
-        navController.navigate(NavigationScreen.Login.route) {
-            popUpTo(navController.graph.startDestinationId) {
-                inclusive = true
-            }
-            launchSingleTop = true
         }
     }
 }

@@ -71,6 +71,7 @@ class MailboxDetailViewModel(
                             batteryPercent = mailbox.batteryPercent,
                             isConnected = mailbox.isConnected,
                             lockState = mailbox.lockState,
+                            isLockdown = mailbox.isLockdown
                         )
                     }
                 }
@@ -79,6 +80,7 @@ class MailboxDetailViewModel(
 
     fun onLockButtonClick() {
         if (_mailboxDetailState.value.isLockPending) return
+        if (_mailboxDetailState.value.isLockdownPending) return
 
         when (_mailboxDetailState.value.lockState) {
             LockState.LOCKED -> unlock()
@@ -102,8 +104,9 @@ class MailboxDetailViewModel(
     }
 
     private fun lock() {
-        doorSimulation?.cancel()
         viewModelScope.launch {
+            doorSimulation?.cancel()   // only matters if simulateDoor waits before opening (example: user is not there yet)
+
             _mailboxDetailState.update { it.copy(isLockPending = true) }
             delay(500.milliseconds)
 
@@ -126,5 +129,29 @@ class MailboxDetailViewModel(
         repository.setLockState(mailboxId, lockState, event)
             .onSuccess { Log.d("MailboxDetail", "setLockState($lockState) OK") }
             .onFailure { e -> Log.e("MailboxDetail", "setLockState($lockState) failed", e) }
+    }
+
+    fun onLockdownButtonClick() {
+        if (_mailboxDetailState.value.isLockdownPending) return
+        if (_mailboxDetailState.value.isLockPending) return
+        if (_mailboxDetailState.value.lockState == LockState.OPEN) return
+
+        val toggleLockDown = !_mailboxDetailState.value.isLockdown
+
+        viewModelScope.launch {
+            _mailboxDetailState.update {
+                it.copy(isLockdownPending = true)
+            }
+            delay(500.milliseconds)
+
+            repository.setLockdownState(mailboxId, toggleLockDown)
+                .onSuccess { Log.d("MailboxDetail", "setLockdownState(true) OK") }
+                .onFailure { e -> Log.e("MailboxDetail", "setLockdownState(true) failed", e) }
+
+            // isLockdown is updated with firebase listener
+            _mailboxDetailState.update {
+                it.copy(isLockdownPending = false)
+            }
+        }
     }
 }

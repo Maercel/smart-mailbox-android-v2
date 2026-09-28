@@ -9,4 +9,5 @@ data class MailboxDto(
     val deviceModelId: String = "unknown",
     val deviceVerificationCode: String = "",
     val lockState: String = "LOCKED",
+    val lockdown: Boolean = false,
 )

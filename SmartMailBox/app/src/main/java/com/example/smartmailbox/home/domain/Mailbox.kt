@@ -14,6 +14,8 @@ data class Mailbox(
     val isConnected: Boolean,
     val deviceModel: MailboxDeviceModel,
     val lockState: LockState,
+    // isLockdown here and lockdown in MailboxDto because firestore's mapping inconsistently because of is prefix.
+    val isLockdown: Boolean,
     @DrawableRes val imageRes: Int
 )
 
@@ -26,6 +28,7 @@ fun MailboxDto.toDomain(): Mailbox {
         isConnected = DEMO_IS_CONNECTED,
         deviceModel = model,
         imageRes = MailboxDeviceCatalog.imageFor(model),
-        lockState = LockState.entries.find { it.name == lockState } ?: LockState.LOCKED
+        lockState = LockState.entries.find { it.name == lockState } ?: LockState.LOCKED,
+        isLockdown = lockdown
     )
 }

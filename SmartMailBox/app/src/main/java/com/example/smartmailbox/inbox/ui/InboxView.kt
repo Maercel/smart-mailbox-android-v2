@@ -83,8 +83,8 @@ fun InboxView(
                 Text(
                     text = "No notifications",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
+                    // alpha = 0.7f
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
