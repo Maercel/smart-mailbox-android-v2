@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,32 +26,38 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smartmailbox.R
 import com.example.smartmailbox.auth.data.GoogleAuthHelper
+import com.example.smartmailbox.ui.components.ErrorText
 import com.example.smartmailbox.ui.theme.Alata
 import com.example.smartmailbox.ui.theme.Black
+import com.example.smartmailbox.ui.theme.DarkGray
 import com.example.smartmailbox.ui.theme.ErrorRed
+import com.example.smartmailbox.ui.theme.LightGray
 import com.example.smartmailbox.ui.theme.VeryDarkGreen
 import kotlinx.coroutines.launch
+
 
 @Composable
 fun LoginView(
     loginViewModel: LoginViewModel,
+    paddingValues: PaddingValues,
     onTwoFactorRequired: () -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
 ) {
 
     val loginState = loginViewModel.loginState
@@ -65,168 +72,181 @@ fun LoginView(
     val googleAuthHelper = remember { GoogleAuthHelper(contextWrapper) }
     val coroutineScope = rememberCoroutineScope()
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(paddingValues)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
 
-        Text(
-            text = "Login",
-            style = MaterialTheme.typography.headlineLarge,
-            letterSpacing = 1.5.sp
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        OutlinedTextField(
-            value = loginState.email,
-            onValueChange = loginViewModel::onEmailChange,
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = MaterialTheme.typography.bodyMedium,
-            singleLine = true,
-            shape = RoundedCornerShape(5.dp),
-            enabled = !loginState.isLoading,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = VeryDarkGreen,
-                unfocusedBorderColor = VeryDarkGreen,
-                focusedLabelColor = VeryDarkGreen,
-                cursorColor = VeryDarkGreen
-            )
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = loginState.password,
-            onValueChange = loginViewModel::onPasswordChange,
-            label = { Text("Password") },
+        Image(
+            painter = painterResource(R.drawable.smart_mailbox_app_logo_transparent),
+            contentDescription = "Smart Mailbox logo",
             modifier = Modifier
-                .fillMaxWidth(),
-            textStyle = MaterialTheme.typography.bodyMedium,
-            singleLine = true,
-            enabled = !loginState.isLoading,
-            shape = RoundedCornerShape(5.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = VeryDarkGreen,
-                unfocusedBorderColor = VeryDarkGreen,
-                focusedLabelColor = VeryDarkGreen,
-                cursorColor = VeryDarkGreen
-            )
+                .align(Alignment.TopCenter)
+                .padding(top = 32.dp)
+                .fillMaxWidth(0.8f),
+            contentScale = ContentScale.Fit
         )
 
-        if (loginState.errorMessage != null) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = "Welcome back",
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Log in to SmartMailbox app.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextField(
+                value = loginState.email,
+                onValueChange = loginViewModel::onEmailChange,
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodyMedium,
+                singleLine = true,
+                shape = RoundedCornerShape(5.dp),
+                enabled = !loginState.isLoading,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Black,
+                    unfocusedBorderColor = DarkGray,
+                    focusedLabelColor = Black,
+                    cursorColor = Black
+                )
+            )
+
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = loginState.errorMessage,
-                fontFamily = Alata,
-                fontSize = 14.sp,
-                color = ErrorRed,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = { loginViewModel.login() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(72.dp)
-                .padding(0.dp, 8.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
-            shape = RoundedCornerShape(5.dp),
-            enabled = !loginState.isLoading
-        ) {
-            if (loginState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    strokeWidth = 2.dp
+            OutlinedTextField(
+                value = loginState.password,
+                onValueChange = loginViewModel::onPasswordChange,
+                label = { Text("Password") },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodyMedium,
+                singleLine = true,
+                enabled = !loginState.isLoading,
+                shape = RoundedCornerShape(5.dp),
+                visualTransformation = PasswordVisualTransformation(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Black,
+                    unfocusedBorderColor = DarkGray,
+                    focusedLabelColor = Black,
+                    cursorColor = Black
                 )
-            } else {
-                Text("Login")
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            HorizontalDivider(
-                modifier = Modifier.weight(1f),
-                color = Black.copy(alpha = 0.7f)
-
             )
 
-            Text(
-                text = "OR",
-                modifier = Modifier.padding(horizontal = 12.dp),
-                style = MaterialTheme.typography.bodySmall,
-                color = Black.copy(alpha = 0.7f)
-            )
+            ErrorText(loginState.errorMessage)
 
-            HorizontalDivider(
-                modifier = Modifier.weight(1f),
-                color = Black.copy(alpha = 0.7f)
-            )
-        }
+            Spacer(modifier = Modifier.height(24.dp))
 
-
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    val idToken = googleAuthHelper.requestGoogleIdToken()
-                    if (idToken != null) {
-                        loginViewModel.loginWithGoogle(idToken)
-                    } else {
-                        Log.e("LoginView", "Google ID token request failed")
-                    }
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            contentPadding = PaddingValues(horizontal = 12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            ),
-            shape = RoundedCornerShape(5.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
-        ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+            Button(
+                onClick = { loginViewModel.login() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(72.dp)
+                    .padding(0.dp, 8.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
+                shape = RoundedCornerShape(5.dp),
+                enabled = !loginState.isLoading
             ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_google_logo),
-                    contentDescription = "Google Logo",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.CenterStart)
+                if (loginState.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Login")
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = Black.copy(alpha = 0.7f)
                 )
 
-                Text("Login with Google")
+                Text(
+                    text = "OR",
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Black.copy(alpha = 0.7f)
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = Black.copy(alpha = 0.7f)
+                )
             }
-        }
 
-        //Spacer(modifier = Modifier.height(5.dp))
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        val idToken = googleAuthHelper.requestGoogleIdToken()
+                        if (idToken != null) {
+                            loginViewModel.loginWithGoogle(idToken)
+                        } else {
+                            Log.e("LoginView", "Google ID token request failed")
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .padding(top = 8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(5.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_google_logo),
+                        contentDescription = "Google Logo",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .align(Alignment.CenterStart)
+                    )
 
-        TextButton(
-            onClick = onRegisterClick,
-            enabled = !loginState.isLoading
-        ) {
-            Text(
-                text = "Don't have an account? Register",
-                style = MaterialTheme.typography.bodySmall
-            )
+                    Text("Login with Google")
+                }
+            }
+
+            TextButton(
+                onClick = onRegisterClick,
+                enabled = !loginState.isLoading,
+            ) {
+                Text(
+                    text = "Don't have an account? Register",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
