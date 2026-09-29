@@ -11,20 +11,27 @@
   <img alt="Jetpack Compose" src="https://img.shields.io/badge/Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white">
   <img alt="Material 3" src="https://img.shields.io/badge/Material_3-757575?style=for-the-badge&logo=materialdesign&logoColor=white">
   <img alt="Firebase" src="https://img.shields.io/badge/Firebase-DD2C00?style=for-the-badge&logo=firebase&logoColor=white">
+  <img alt="Firestore" src="https://img.shields.io/badge/Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black">
   <img alt="Google Sign-In" src="https://img.shields.io/badge/Google_Sign--In-4285F4?style=for-the-badge&logo=google&logoColor=white">
   <img alt="Retrofit" src="https://img.shields.io/badge/Retrofit-48B983?style=for-the-badge&logo=square&logoColor=white">
   <img alt="CameraX" src="https://img.shields.io/badge/CameraX-34A853?style=for-the-badge&logo=android&logoColor=white">
   <img alt="ZXing" src="https://img.shields.io/badge/ZXing_QR-000000?style=for-the-badge&logo=qrcode&logoColor=white">
   <img alt="Gradle" src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
+  <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">
+  <p align="center">
+  <a href="https://github.com/Maercel/smart-mailbox-android-v2/actions/workflows/android-ci.yml">
+    <img alt="Android CI" src="https://github.com/Maercel/smart-mailbox-android-v2/actions/workflows/android-ci.yml/badge.svg">
+  </a>
+</p>
 </div>
 
 <br>
 
 <div align="center">
-  <img src="docs/screenshots/home-with-mailbox.png" alt="Home" width="22%">
-  <img src="docs/screenshots/details.png" alt="Mailbox unlocked" width="22%">
-  <img src="docs/screenshots/details-activity.png" alt="Activity" width="22%">
-  <img src="docs/screenshots/scan-qr-code.png" alt="Scan QR code" width="22%">
+  <img src="docs/screenshots/home-with-mailbox.png" alt="Home" width="20%">
+  <img src="docs/screenshots/details.png" alt="Mailbox unlocked" width="20%">
+  <img src="docs/screenshots/details-activity.png" alt="Activity" width="20%">
+  <img src="docs/screenshots/scan-qr-code.png" alt="Scan QR code" width="20%">
 </div>
 
 ---
@@ -78,7 +85,7 @@ Backstory: this started as a university project that didn't turn out as planned.
     <td align="center"><b>Home (empty)</b><br><img src="docs/screenshots/home-no-mailboxes.png" width="250"></td>
   </tr>
   <tr>
-    <td align="center"><b>Add mailbox: code</b><br><img src="docs/screenshots/add-mailbox-verification.png" width="250"></td>
+    <td align="center"><b>Add mailbox: verification code</b><br><img src="docs/screenshots/add-mailbox-verification.png" width="250"></td>
     <td align="center"><b>Add mailbox: name</b><br><img src="docs/screenshots/add-mailbox-name.png" width="250"></td>
     <td align="center"><b>Home</b><br><img src="docs/screenshots/home-with-mailbox.png" width="250"></td>
   </tr>
@@ -121,7 +128,7 @@ Backstory: this started as a university project that didn't turn out as planned.
 ### 🛠️ To build and develop
 - Android Studio Narwhal 3 Feature Drop (2025.1.3) or newer
 - Android SDK 36 (install it in Android Studio's SDK Manager if Gradle asks for it)
-- JDK 11 or newer (bundled with Android Studio)
+- JDK 17 or newer (bundled with Android Studio)
 - Android device or emulator running **Android 8.0 (API 26) or newer**
   - The app uses `java.time` (`Instant`) for mailbox activity timestamps, which is only available from API 26
 - A Firebase project with **Authentication** and **Firestore** turned on
