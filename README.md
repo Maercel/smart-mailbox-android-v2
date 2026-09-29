@@ -31,7 +31,7 @@
 
 ## 📖 About
 
-An Android app built with Kotlin and Jetpack Compose for managing SmartMailbox devices.
+An **Android** app built with **Kotlin** and **Jetpack Compose** for managing** SmartMailbox devices**.
 
 Backstory: this started as a university project that didn't turn out as planned. After the course ended, I kept building on it:
 - 🔄 Redesigned the app and its structure and added more features
