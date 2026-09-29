@@ -65,8 +65,10 @@ Backstory: this started as a university project that didn't turn out as planned.
   - Logout
 - 📊 Activity – see all activity across your mailboxes, with filters
 
+
+## All Screenshots
 <details>
-<summary>📸 All screenshots</summary>
+<summary>📸 <b>All screenshots</b></summary>
 <br>
 
 <table align="center">
