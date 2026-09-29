@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/screenshots/smartmailbox-logo.svg" alt="SmartMailbox" width="25%">
+  <img src="docs/screenshots/smartmailbox-logo.svg" alt="SmartMailbox" width="50%">
 </p>
 <p align="center">
   An Android app for managing SmartMailboxes.
