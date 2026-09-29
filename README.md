@@ -28,10 +28,10 @@
 <br>
 
 <div align="center">
-  <img src="docs/screenshots/home-with-mailbox.png" alt="Home" width="20%">
-  <img src="docs/screenshots/details.png" alt="Mailbox unlocked" width="20%">
-  <img src="docs/screenshots/details-activity.png" alt="Activity" width="20%">
-  <img src="docs/screenshots/scan-qr-code.png" alt="Scan QR code" width="20%">
+  <img src="docs/screenshots/home-with-mailbox.png" alt="Home" width="22%">
+  <img src="docs/screenshots/details.png" alt="Mailbox unlocked" width="22%">
+  <img src="docs/screenshots/details-activity.png" alt="Activity" width="22%">
+  <img src="docs/screenshots/scan-qr-code.png" alt="Scan QR code" width="22%">
 </div>
 
 ---
