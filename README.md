@@ -70,7 +70,7 @@ Backstory: this started as a university project that didn't turn out as planned.
 - 📊 Activity – see all activity across your mailboxes, with filters
 
 
-## All Screenshots
+## 📸 All Screenshots
 <details>
 <summary>📸 <b>All screenshots</b></summary>
 <br>
