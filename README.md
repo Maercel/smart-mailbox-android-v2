@@ -2,12 +2,6 @@
   <img src="docs/screenshots/smartmailbox-logo.svg" alt="SmartMailbox" width="50%">
 </p>
 
-<br>
-
-<p align="center">
-  An Android app for managing SmartMailboxes.
-</p>
-
 <div align="center">
   <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
   <img alt="Android" src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white">
@@ -41,7 +35,7 @@
 
 ## 📖 About
 
-An **Android** app built with **Kotlin** and **Jetpack Compose** for managing** Smart Mailbox devices**.
+An **Android** app built with **Kotlin** and **Jetpack Compose** for managing **Smart Mailbox devices**.
 
 Backstory: this started as a university project that didn't turn out as planned. After the course ended, I kept building on it:
 - 🔄 Redesigned the app and its structure and added more features
