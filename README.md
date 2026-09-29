@@ -1,9 +1,12 @@
 <p align="center">
   <img src="docs/screenshots/smartmailbox-logo.svg" alt="SmartMailbox" width="50%">
 </p>
-<h3 align="center">
+
+<br>
+
+<p align="center">
   An Android app for managing SmartMailboxes.
-</h3>
+</p>
 
 <div align="center">
   <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
