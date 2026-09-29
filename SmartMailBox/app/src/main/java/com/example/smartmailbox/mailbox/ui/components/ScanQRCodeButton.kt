@@ -1,4 +1,4 @@
-package com.example.smartmailbox.scanner.ui.components
+package com.example.smartmailbox.mailbox.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

@@ -16,7 +16,6 @@ local.properties
 /app/google-services.json
 
 /tools/seed-devices/node_modules/
-/tools/seed-devices/README.md
 
 # FIREBASE ADMIN KEYS
 **/service-account*.json

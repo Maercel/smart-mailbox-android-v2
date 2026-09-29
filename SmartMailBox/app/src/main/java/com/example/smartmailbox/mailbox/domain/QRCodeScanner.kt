@@ -1,4 +1,4 @@
-package com.example.smartmailbox.scanner.domain
+package com.example.smartmailbox.mailbox.domain
 
 import android.graphics.ImageFormat
 import androidx.camera.core.ImageAnalysis

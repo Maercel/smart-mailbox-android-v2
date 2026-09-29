@@ -1,4 +1,4 @@
-package com.example.smartmailbox.scanner.ui
+package com.example.smartmailbox.mailbox.ui
 
 data class ScannerState(
     val scannedCode: String = "",

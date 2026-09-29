@@ -22,9 +22,9 @@ fun MailboxSetupStep(
     onAdd: () -> Unit,
 ) {
     OutlinedTextField(
-        value = state.label,
+        value = state.name,
         onValueChange = onLabelChange,
-        label = { Text("Mailbox Label") },
+        label = { Text("Mailbox Name") },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         enabled = !state.isLoading,

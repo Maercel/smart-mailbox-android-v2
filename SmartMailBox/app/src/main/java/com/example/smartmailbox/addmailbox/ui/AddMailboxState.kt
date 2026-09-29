@@ -1,7 +1,7 @@
 package com.example.smartmailbox.addmailbox.ui
 
 data class AddMailboxState(
-    val label: String = "",
+    val name: String = "",
     /*
     val password: String = "",
     val confirmPassword: String = "",

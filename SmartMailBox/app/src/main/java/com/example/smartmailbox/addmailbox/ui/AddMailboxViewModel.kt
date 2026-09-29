@@ -37,8 +37,8 @@ class AddMailboxViewModel(
         _addMailboxState.update { it.copy(deviceVerificationCode = DeviceVerificationCodeFormat.normalize(input), errorMessage = null) }
     }
 
-    fun onLabelChange(value: String) {
-        _addMailboxState.update { it.copy(label = value, errorMessage = null) }
+    fun onNameChange(value: String) {
+        _addMailboxState.update { it.copy(name = value, errorMessage = null) }
     }
 
     fun onVerifyClick() {
@@ -87,7 +87,7 @@ class AddMailboxViewModel(
         val currentAddMailboxState = _addMailboxState.value
         if (currentAddMailboxState.isLoading) return
 
-        val name = currentAddMailboxState.label.trim()
+        val name = currentAddMailboxState.name.trim()
         if (name.isEmpty()) {
             _addMailboxState.update { it.copy(errorMessage = "Mailbox label is required") }
             return

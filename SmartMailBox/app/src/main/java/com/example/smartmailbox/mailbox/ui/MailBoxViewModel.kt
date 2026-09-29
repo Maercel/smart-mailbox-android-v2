@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartmailbox.api.data.remote.PostMailBoxData
 import com.example.smartmailbox.api.data.remote.RetrofitInstance
 import com.example.smartmailbox.api.data.ui.APIState
-import com.example.smartmailbox.scanner.ui.ScannerState
 import kotlinx.coroutines.launch
 import android.util.Base64
 import java.io.File
@@ -17,11 +16,8 @@ import java.io.FileOutputStream
 import java.util.zip.ZipInputStream
 import java.io.ByteArrayInputStream
 import android.media.MediaPlayer
-import com.example.smartmailbox.scanner.domain.MailBoxQRParser
-import kotlinx.coroutines.Job
+import com.example.smartmailbox.mailbox.domain.MailBoxQRParser
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlin.time.Duration.Companion.milliseconds
 
 class MailBoxViewModel : ViewModel() {

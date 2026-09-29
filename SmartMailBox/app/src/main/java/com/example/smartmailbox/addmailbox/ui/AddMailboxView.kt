@@ -79,7 +79,7 @@ fun AddMailboxView(
                 )
                 AddMailboxStep.MailboxSetup -> MailboxSetupStep(
                     state = addMailboxState,
-                    onLabelChange = addMailboxViewModel::onLabelChange,
+                    onLabelChange = addMailboxViewModel::onNameChange,
                     onAdd = addMailboxViewModel::addMailbox
                 )
             }
