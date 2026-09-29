@@ -22,6 +22,10 @@
 </p>
 </div>
 
+<p align="center">
+  An <b>Android app</b> built with <b>Kotlin</b> and <b>Jetpack Compose</b> for managing <b>Smart Mailbox devices</b>.
+</p>
+
 <br>
 
 <div align="center">
@@ -34,7 +38,6 @@
 ---
 
 ## 📖 About
-
 An **Android** app built with **Kotlin** and **Jetpack Compose** for managing **Smart Mailbox devices**.
 
 Backstory: this started as a university project that didn't turn out as planned. After the course ended, I kept building on it:
