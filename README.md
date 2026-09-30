@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="docs/screenshots/smartmailbox-logo.svg" alt="SmartMailbox" width="50%">
-</p>
+<h1 align="center">SmartMailbox App</h1>
 
 <div align="center">
   <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
@@ -23,7 +21,7 @@
 </div>
 
 <p align="center">
-  An <b>Android app</b> built with <b>Kotlin</b> and <b>Jetpack Compose</b> for managing <b>Smart Mailbox devices</b>.
+  An Android app to control <b>your smart mailboxes</b>.
 </p>
 
 <br>
@@ -38,7 +36,9 @@
 ---
 
 ## 📖 About
-An **Android** app built with **Kotlin** and **Jetpack Compose** for managing **Smart Mailbox devices**.
+An Android app built with Kotlin and Jetpack Compose for managing **smart mailboxes**.
+
+A smart mailbox is a parcel box you **lock and unlock from your phone**, so deliveries can be left safely even when you're not home.
 
 Backstory: this started as a university project that didn't turn out as planned. After the course ended, I kept building on it:
 - 🔄 Redesigned the app and its structure and added more features
