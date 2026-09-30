@@ -74,7 +74,7 @@ Backstory: this started as a university project that didn't turn out as planned.
 
 
 ## 📸 All Screenshots
-<details>
+<details open>
 <summary>📸 <b>All screenshots</b></summary>
 <br>
 
