@@ -21,7 +21,7 @@
 </div>
 
 <p align="center">
-  An Android app to control <b>your smart mailboxes</b>.
+  An Android app to manage <b>your smart mailboxes</b>.
 </p>
 
 <br>
